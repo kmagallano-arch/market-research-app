@@ -43,19 +43,7 @@ export default function Sidebar() {
             style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, cursor: 'pointer', position: 'relative', overflow: 'hidden', border: hovering ? '2px dashed rgba(255,255,255,0.4)' : '2px solid transparent', transition: 'border 0.15s' }}
             title="Click to upload your logo"
           >
-            {logoUrl ? (
-              <img src={logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
-            ) : (
-              <div style={{ width: '100%', height: '100%', borderRadius: 8, background: 'linear-gradient(135deg, #2E6FFF, #764BA2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="21" height="21" viewBox="0 0 20 20" fill="none">
-                  <ellipse cx="10" cy="13" rx="7" ry="5" fill="white" opacity="0.95"/>
-                  <circle cx="14.5" cy="8" r="3.5" fill="white" opacity="0.95"/>
-                  <path d="M17.5 8.5L20.5 7.5L19.5 9.5L17.5 9z" fill="#FFB830"/>
-                  <circle cx="15.5" cy="7" r="0.8" fill="#1A1D2E"/>
-                  <path d="M6 12C7 10 9 9.5 11 10" stroke="#2E6FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
-                </svg>
-              </div>
-            )}
+            <img src={logoUrl || '/logo.png'} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
             {/* Hover overlay */}
             {hovering && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8 }}>
