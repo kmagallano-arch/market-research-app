@@ -9,6 +9,7 @@ const nav = [
   { href: '/', label: 'Dashboard', icon: '◼' },
   { section: 'Research' },
   { href: '/bestsellers',    label: 'Bestsellers',        icon: '★' },
+  { href: '/keyword-search', label: 'Keyword Search',      icon: '🔍', badge: 'NEW' },
   { href: '/keywords',       label: 'Keywords',            icon: '⌕' },
   { href: '/rising',         label: 'Rising Products',     icon: '↗', badge: 'NEW' },
   { href: '/exploding',      label: 'Exploding Topics',    icon: '💥', badge: 'NEW' },
