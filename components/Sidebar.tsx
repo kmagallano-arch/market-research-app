@@ -34,16 +34,6 @@ const nav = [
   { href: '/scorecard',      label: 'Product Scorecard',    icon: 'clipboard', badge: 'NEW' },
   { href: '/price-history',  label: 'Price History',        icon: 'chart',     badge: 'NEW' },
   { href: '/market-sizing',  label: 'Market Sizing',        icon: 'globe',     badge: 'NEW' },
-  { section: 'Markets' },
-  { href: '/ph-market',      label: 'Philippines',    flag: '🇵🇭' },
-  { href: '/uk-market',      label: 'United Kingdom', flag: '🇬🇧' },
-  { href: '/de-market',      label: 'Germany',        flag: '🇩🇪' },
-  { href: '/nl-market',      label: 'Netherlands',    flag: '🇳🇱' },
-  { href: '/fr-market',      label: 'France',         flag: '🇫🇷' },
-  { href: '/se-market',      label: 'Sweden',         flag: '🇸🇪' },
-  { href: '/no-market',      label: 'Norway',         flag: '🇳🇴' },
-  { href: '/au-market',      label: 'Australia',      flag: '🇦🇺' },
-  { href: '/be-market',      label: 'Belgium',        flag: '🇧🇪' },
   { section: 'Tools' },
   { href: '/recommendations',label: 'AI Picks',       icon: 'sparkle' },
   { href: '/trends',         label: 'Trends',         icon: 'signal' },
@@ -182,7 +172,7 @@ export default function Sidebar() {
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#12B76A', boxShadow: '0 0 5px #12B76A' }} />
           <span style={{ fontSize: 12.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools · 9 markets</div>
+        <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools</div>
       </div>
     </aside>
   )
