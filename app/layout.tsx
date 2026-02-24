@@ -1,15 +1,20 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { LogoProvider } from '@/components/LogoContext'
 
 export const metadata: Metadata = {
-  title: 'Market Research | US & Philippines',
-  description: 'Product market research for US and Philippines',
+  title: 'Brainy Duck — Market Intelligence',
+  description: 'AI-powered market research for electronics across US, PH, UK, DE, NL, SE, NO',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <LogoProvider>
+          {children}
+        </LogoProvider>
+      </body>
     </html>
   )
 }

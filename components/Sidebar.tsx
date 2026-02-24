@@ -1,6 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useRef, useState } from 'react'
+import { useLogo } from './LogoContext'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.7"/></svg> },
@@ -14,29 +16,74 @@ const nav = [
 
 export default function Sidebar() {
   const path = usePathname()
+  const { logoUrl, setLogoUrl } = useLogo()
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [hovering, setHovering] = useState(false)
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setLogoUrl(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
   return (
-    <aside style={{
-      width: 220, background: '#1A1D2E',
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      flexShrink: 0, position: 'sticky', top: 0, height: '100vh',
-    }}>
-      {/* Logo */}
-      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+    <aside style={{ width: 220, background: '#1A1D2E', minHeight: '100vh', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh' }}>
+      
+      {/* Logo area — clickable to upload */}
+      <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #2E6FFF, #764BA2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(46,111,255,0.4)' }}>
-            <svg width="21" height="21" viewBox="0 0 20 20" fill="none">
-              <ellipse cx="10" cy="13" rx="7" ry="5" fill="white" opacity="0.95"/>
-              <circle cx="14.5" cy="8" r="3.5" fill="white" opacity="0.95"/>
-              <path d="M17.5 8.5L20.5 7.5L19.5 9.5L17.5 9z" fill="#FFB830"/>
-              <circle cx="15.5" cy="7" r="0.8" fill="#1A1D2E"/>
-              <path d="M6 12C7 10 9 9.5 11 10" stroke="#2E6FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
-            </svg>
+          
+          {/* Logo image — click to replace */}
+          <div
+            onClick={() => fileRef.current?.click()}
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, cursor: 'pointer', position: 'relative', overflow: 'hidden', border: hovering ? '2px dashed rgba(255,255,255,0.4)' : '2px solid transparent', transition: 'border 0.15s' }}
+            title="Click to upload your logo"
+          >
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', borderRadius: 8, background: 'linear-gradient(135deg, #2E6FFF, #764BA2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="21" height="21" viewBox="0 0 20 20" fill="none">
+                  <ellipse cx="10" cy="13" rx="7" ry="5" fill="white" opacity="0.95"/>
+                  <circle cx="14.5" cy="8" r="3.5" fill="white" opacity="0.95"/>
+                  <path d="M17.5 8.5L20.5 7.5L19.5 9.5L17.5 9z" fill="#FFB830"/>
+                  <circle cx="15.5" cy="7" r="0.8" fill="#1A1D2E"/>
+                  <path d="M6 12C7 10 9 9.5 11 10" stroke="#2E6FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
+                </svg>
+              </div>
+            )}
+            {/* Hover overlay */}
+            {hovering && (
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8 }}>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2v8M4 6l4-4 4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12h12" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </div>
+            )}
           </div>
+
+          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'white', letterSpacing: '-0.3px' }}>Brainy Duck</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.3px' }}>Market Intelligence</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.3px' }}>Market Intelligence</div>
           </div>
+
+          {/* Remove logo button */}
+          {logoUrl && (
+            <button onClick={() => setLogoUrl(null)} title="Remove logo" style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.25)', fontSize: 16, lineHeight: 1, padding: 2 }}>×</button>
+          )}
         </div>
+
+        {/* Upload hint */}
+        {hovering && !logoUrl && (
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 6, textAlign: 'center' }}>Click logo to upload</div>
+        )}
       </div>
 
       {/* Nav */}
@@ -45,15 +92,7 @@ export default function Sidebar() {
         {nav.map(item => {
           const active = path === item.href
           return (
-            <Link key={item.href} href={item.href} style={{
-              display: 'flex', alignItems: 'center', gap: 9,
-              padding: '8px 10px', borderRadius: 9, marginBottom: 2,
-              color: active ? 'white' : 'rgba(255,255,255,0.45)',
-              background: active ? 'rgba(255,255,255,0.1)' : 'transparent',
-              textDecoration: 'none', fontSize: 13,
-              fontWeight: active ? 600 : 400,
-              transition: 'all 0.15s',
-            }}>
+            <Link key={item.href} href={item.href} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 10px', borderRadius: 9, marginBottom: 2, color: active ? 'white' : 'rgba(255,255,255,0.45)', background: active ? 'rgba(255,255,255,0.1)' : 'transparent', textDecoration: 'none', fontSize: 13, fontWeight: active ? 600 : 400, transition: 'all 0.15s' }}>
               <span style={{ color: active ? '#2E6FFF' : 'rgba(255,255,255,0.3)', flexShrink: 0 }}>{item.icon}</span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {(item as any).badge && <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(255,77,106,0.25)', color: '#FF6B8A', borderRadius: 4, fontWeight: 700 }}>{(item as any).badge}</span>}
