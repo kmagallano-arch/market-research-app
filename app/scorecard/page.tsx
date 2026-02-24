@@ -96,7 +96,7 @@ export default function ScorecardPage() {
               <div className="card" style={{padding:'20px'}}>
                 <div style={{fontSize:14,fontWeight:700,color:'#1A1D2E',marginBottom:14}}>Score Breakdown</div>
                 {data.scores && Object.entries(data.scores).map(([key,val]:any)=>(
-                  <ScoreBar key={key} label={key.replace(/([A-Z])/g,' $1').replace(/^\w/,c=>c.toUpperCase())} value={val} color={val>=70?'#00C48C':val>=50?'#2E6FFF':'#FF4D6A'}/>
+                  <ScoreBar key={key} label={key.replace(/([A-Z])/g,' $1').replace(/^\w/,(c:string)=>c.toUpperCase())} value={val} color={val>=70?'#00C48C':val>=50?'#2E6FFF':'#FF4D6A'}/>
                 ))}
               </div>
             </div>
