@@ -60,7 +60,7 @@ export default function Sidebar() {
       `}</style>
       <aside style={{
         width: 234,
-        background: 'linear-gradient(160deg, #0d5c63 0%, #0a7a6e 30%, #0891b2 65%, #0e7490 100%)',
+        background: 'linear-gradient(160deg, #1a0a1e 0%, #2d0f3d 45%, #1a0a2e 100%)',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
@@ -69,8 +69,8 @@ export default function Sidebar() {
         top: 0,
         height: '100vh',
         overflowY: 'auto',
-        borderRight: '1px solid rgba(255,255,255,0.12)',
-        boxShadow: '4px 0 24px rgba(8,145,178,0.25)',
+        borderRight: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '4px 0 24px rgba(100,0,80,0.3)',
       }}>
 
         {/* Glass overlay */}
@@ -81,8 +81,8 @@ export default function Sidebar() {
         }}/>
 
         {/* Decorative orbs */}
-        <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(34,211,238,0.15)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
-        <div style={{ position: 'absolute', bottom: 80, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(20,184,166,0.18)', filter: 'blur(35px)', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: 'rgba(192,38,211,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', bottom: 80, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(147,51,234,0.18)', filter: 'blur(35px)', pointerEvents: 'none' }}/>
 
         {/* Logo */}
         <div style={{ padding: '22px 18px 14px', borderBottom: '1px solid rgba(255,255,255,0.12)', flexShrink: 0, position: 'relative' }}>
@@ -103,7 +103,7 @@ export default function Sidebar() {
             title="Click to upload your logo"
           >
             <img
-              src={logoUrl || '/logo-v2.png'}
+              src={logoUrl || '/logo.png?v=3'}
               alt="Logo"
               style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }}
             />
