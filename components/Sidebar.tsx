@@ -170,7 +170,7 @@ export default function Sidebar() {
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#12B76A', boxShadow: '0 0 5px #12B76A' }} />
-          <span style={{ fontSize: 12.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
+          <span style={{ fontSize: 12.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · Claude Sonnet</span>
         </div>
         <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools</div>
       </div>
