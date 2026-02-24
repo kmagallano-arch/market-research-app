@@ -51,47 +51,58 @@ export default function Sidebar() {
   return (
     <aside style={{
       width: 234,
-      background: 'linear-gradient(175deg, #0c1445 0%, #1a1065 45%, #2a1760 100%)',
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflowY: 'auto',
-      borderRight: '1px solid rgba(139,92,246,0.18)'
+      background: '#ffffff',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0,
+      position: 'sticky',
+      top: 0,
+      height: '100vh',
+      overflowY: 'auto',
+      borderRight: '1px solid #E8E9EF',
+      boxShadow: '2px 0 12px rgba(99,102,241,0.06)',
     }}>
 
       {/* Logo */}
-      <div style={{ padding: '24px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
+      <div style={{ padding: '20px 18px 14px', borderBottom: '1px solid #F0F1F5', flexShrink: 0 }}>
         <div
           onClick={() => fileRef.current?.click()}
           onMouseEnter={() => setLogoHover(true)}
           onMouseLeave={() => setLogoHover(false)}
           style={{
             width: 80, height: 80, borderRadius: '50%',
-            margin: '0 auto 14px', cursor: 'pointer',
+            margin: '0 auto 12px', cursor: 'pointer',
             position: 'relative', overflow: 'hidden',
-            background: 'white',
+            background: '#F4F5FF',
             boxShadow: logoHover
-              ? '0 0 0 3px rgba(139,92,246,0.7), 0 8px 32px rgba(99,102,241,0.55)'
-              : '0 4px 24px rgba(99,102,241,0.4)',
+              ? '0 0 0 3px rgba(99,102,241,0.3), 0 6px 20px rgba(99,102,241,0.2)'
+              : '0 2px 12px rgba(99,102,241,0.12)',
             transition: 'box-shadow 0.2s',
           }}
           title="Click to upload your logo"
         >
-          <img src={logoUrl || '/logo.png'} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+          <img
+            src={logoUrl || '/logo.png'}
+            alt="Logo"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%', padding: 4 }}
+          />
           {logoHover && (
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
               <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2v8M4 6l4-4 4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 12h12" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M8 2v8M4 6l4-4 4 4" stroke="#4F46E5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 12h12" stroke="#4F46E5" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
           )}
         </div>
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px' }}>Brainy Duck</div>
-          <div style={{ fontSize: 11, color: 'rgba(200,190,255,0.45)', marginTop: 3 }}>Market Intelligence</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1D2E', letterSpacing: '-0.2px' }}>Brainy Duck</div>
+          <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>Market Intelligence</div>
         </div>
         {logoUrl && (
-          <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '8px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 11 }}>reset</button>
+          <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '6px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: '#CBD5E0', fontSize: 11 }}>reset</button>
         )}
       </div>
 
@@ -102,9 +113,10 @@ export default function Sidebar() {
             return (
               <div key={idx} style={{
                 fontSize: 10, fontWeight: 700,
-                color: 'rgba(200,185,255,0.35)',
-                letterSpacing: '1px', textTransform: 'uppercase',
-                padding: '14px 10px 5px',
+                color: '#C4C9D4',
+                letterSpacing: '0.8px',
+                textTransform: 'uppercase',
+                padding: '14px 8px 4px',
               }}>
                 {item.section}
               </div>
@@ -130,32 +142,36 @@ export default function Sidebar() {
                 textDecoration: 'none',
                 fontSize: 13,
                 fontWeight: active ? 600 : 400,
-                transition: 'all 0.15s ease',
-                color: active || isHovered ? '#ffffff' : 'rgba(255,255,255,0.58)',
+                transition: 'all 0.12s ease',
+                // Text color: dark on active, medium-dark on hover, grey at rest
+                color: active ? '#4F46E5' : isHovered ? '#1A1D2E' : '#6B7280',
+                // Background
                 background: active
-                  ? 'rgba(139,92,246,0.28)'
+                  ? 'rgba(99,102,241,0.09)'
                   : isHovered
-                    ? 'rgba(139,92,246,0.14)'
+                    ? 'rgba(99,102,241,0.05)'
                     : 'transparent',
+                // Left accent
                 borderLeft: active
-                  ? '3px solid #a78bfa'
+                  ? '3px solid #6366F1'
                   : isHovered
-                    ? '3px solid rgba(167,139,250,0.45)'
+                    ? '3px solid rgba(99,102,241,0.25)'
                     : '3px solid transparent',
-                borderBottom: '1px solid rgba(255,255,255,0.045)',
+                // Subtle divider
+                borderBottom: '1px solid #F3F4F6',
                 borderTop: 'none',
                 borderRight: 'none',
               }}
             >
-              <span style={{ fontSize: 14, flexShrink: 0, width: 18, textAlign: 'center', opacity: active || isHovered ? 1 : 0.72 }}>
+              <span style={{ fontSize: 14, flexShrink: 0, width: 18, textAlign: 'center' }}>
                 {item.icon}
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge && (
                 <span style={{
-                  fontSize: 9, padding: '1px 5px',
-                  background: active ? 'rgba(167,139,250,0.35)' : 'rgba(167,139,250,0.15)',
-                  color: active ? '#e9d5ff' : '#c4b5fd',
+                  fontSize: 9, padding: '2px 6px',
+                  background: active ? 'rgba(99,102,241,0.12)' : 'rgba(99,102,241,0.07)',
+                  color: active ? '#4F46E5' : '#818CF8',
                   borderRadius: 4, fontWeight: 700,
                 }}>
                   {item.badge}
@@ -167,12 +183,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
+      <div style={{ padding: '12px 16px', borderTop: '1px solid #F0F1F5', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
-          <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#00C48C', boxShadow: '0 0 6px #00C48C' }} />
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>Live · GPT-4o mini</span>
+          <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#00C48C', boxShadow: '0 0 5px #00C48C' }} />
+          <span style={{ fontSize: 12, color: '#9CA3AF' }}>Live · GPT-4o mini</span>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.18)' }}>13 tools · 9 markets</div>
+        <div style={{ fontSize: 11, color: '#C4C9D4' }}>13 tools · 9 markets</div>
       </div>
     </aside>
   )
