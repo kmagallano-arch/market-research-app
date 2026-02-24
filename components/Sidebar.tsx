@@ -110,7 +110,7 @@ export default function Sidebar() {
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px', fontFamily: 'Geist, sans-serif' }}>Brainy Duck</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.4)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
         </div>
         {logoUrl && (
           <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '6px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 11, fontFamily: 'Geist, sans-serif' }}>reset</button>
@@ -124,7 +124,7 @@ export default function Sidebar() {
             return (
               <div key={idx} style={{
                 fontSize: 10, fontWeight: 600,
-                color: 'rgba(255,255,255,0.25)',
+                color: 'rgba(255,240,180,0.3)',
                 letterSpacing: '0.8px', textTransform: 'uppercase',
                 padding: '14px 8px 4px',
                 fontFamily: 'Geist, sans-serif',
@@ -153,7 +153,7 @@ export default function Sidebar() {
                 fontWeight: active ? 600 : 400,
                 fontFamily: 'Geist, sans-serif',
                 transition: 'all 0.12s ease',
-                color: active || isHov ? '#ffffff' : 'rgba(255,255,255,0.58)',
+                color: active || isHov ? '#ffffff' : 'rgba(255,240,180,0.65)',
                 background: active ? 'rgba(255,255,255,0.12)' : isHov ? 'rgba(255,255,255,0.06)' : 'transparent',
                 borderLeft: active ? '2px solid rgba(255,255,255,0.7)' : isHov ? '2px solid rgba(255,255,255,0.2)' : '2px solid transparent',
                 borderBottom: '1px solid rgba(255,255,255,0.04)',
@@ -167,7 +167,7 @@ export default function Sidebar() {
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge && (
-                <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.45)', borderRadius: 4, fontWeight: 700, letterSpacing: '0.3px', fontFamily: 'Geist, sans-serif' }}>
+                <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(255,255,255,0.1)', color: 'rgba(255,240,180,0.45)', borderRadius: 4, fontWeight: 700, letterSpacing: '0.3px', fontFamily: 'Geist, sans-serif' }}>
                   {item.badge}
                 </span>
               )}
@@ -180,9 +180,9 @@ export default function Sidebar() {
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#12B76A', boxShadow: '0 0 5px #12B76A' }} />
-          <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.3)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
+          <span style={{ fontSize: 11.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.18)', fontFamily: 'Geist, sans-serif' }}>14 tools · 9 markets</div>
+        <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools · 9 markets</div>
       </div>
     </aside>
   )
