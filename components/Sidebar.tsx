@@ -32,34 +32,34 @@ export default function Sidebar() {
     <aside style={{ width: 230, background: '#1A1D2E', minHeight: '100vh', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh' }}>
 
       {/* Logo */}
-      <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-          <div
-            onClick={() => fileRef.current?.click()}
-            onMouseEnter={() => setHovering(true)}
-            onMouseLeave={() => setHovering(false)}
-            style={{ width: 40, height: 40, borderRadius: 11, flexShrink: 0, cursor: 'pointer', position: 'relative', overflow: 'hidden', border: hovering ? '2px dashed rgba(255,255,255,0.4)' : '2px solid transparent', transition: 'border 0.15s' }}
-            title="Click to upload your logo"
-          >
-            <img src={logoUrl || '/logo.png'} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 9 }} />
-            {hovering && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 9 }}>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 2v8M4 6l4-4 4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 12h12" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              </div>
-            )}
-          </div>
-          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'white', letterSpacing: '-0.3px' }}>Brainy Duck</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Market Intelligence</div>
-          </div>
-          {logoUrl && (
-            <button onClick={() => setLogoUrl(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 18, lineHeight: 1, padding: 2 }}>×</button>
+      <div style={{ padding: '20px 18px 18px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* Big logo image */}
+        <div
+          onClick={() => fileRef.current?.click()}
+          onMouseEnter={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
+          style={{ width: 72, height: 72, borderRadius: 18, margin: '0 auto 12px', cursor: 'pointer', position: 'relative', overflow: 'hidden', border: hovering ? '2px dashed rgba(255,255,255,0.4)' : '2px solid rgba(255,255,255,0.08)', transition: 'border 0.15s', background: 'rgba(255,255,255,0.05)' }}
+          title="Click to upload your logo"
+        >
+          <img src={logoUrl || '/logo.png'} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+          {hovering && (
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 16 }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2v8M4 6l4-4 4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 12h12" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </div>
           )}
         </div>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+        {/* Name centered below logo */}
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: 'white', letterSpacing: '-0.3px' }}>Brainy Duck</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>Market Intelligence</div>
+        </div>
+        {logoUrl && (
+          <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '6px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 11 }}>reset logo</button>
+        )}
       </div>
 
       {/* Nav */}
