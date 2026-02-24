@@ -109,8 +109,8 @@ export default function Sidebar() {
         </div>
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px', fontFamily: 'Geist, sans-serif' }}>Brainy Duck</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.4)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px', fontFamily: 'Geist, sans-serif' }}>Brainy Duck</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,240,180,0.4)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
         </div>
         {logoUrl && (
           <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '6px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 11, fontFamily: 'Geist, sans-serif' }}>reset</button>
@@ -123,7 +123,7 @@ export default function Sidebar() {
           if ('section' in item) {
             return (
               <div key={idx} style={{
-                fontSize: 10, fontWeight: 600,
+                fontSize: 11, fontWeight: 600,
                 color: 'rgba(255,240,180,0.3)',
                 letterSpacing: '0.8px', textTransform: 'uppercase',
                 padding: '14px 8px 4px',
@@ -149,7 +149,7 @@ export default function Sidebar() {
                 borderRadius: 8,
                 marginBottom: 1,
                 textDecoration: 'none',
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: active ? 600 : 400,
                 fontFamily: 'Geist, sans-serif',
                 transition: 'all 0.12s ease',
@@ -162,7 +162,7 @@ export default function Sidebar() {
             >
               <span style={{ flexShrink: 0, width: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: active || isHov ? 1 : 0.65 }}>
                 {'flag' in item
-                  ? <span style={{ fontSize: 13 }}>{(item as any).flag}</span>
+                  ? <span style={{ fontSize: 14 }}>{(item as any).flag}</span>
                   : Icons[(item as any).icon]}
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
@@ -180,7 +180,7 @@ export default function Sidebar() {
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#12B76A', boxShadow: '0 0 5px #12B76A' }} />
-          <span style={{ fontSize: 11.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
+          <span style={{ fontSize: 12.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · GPT-4o mini</span>
         </div>
         <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools · 9 markets</div>
       </div>
