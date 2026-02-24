@@ -1,73 +1,103 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Sidebar from '@/components/Sidebar'
-import PlatformFilter, { PlatformKey } from '@/components/PlatformFilter'
+import { MARKETS, MarketCode, MARKET_CODES } from '@/lib/markets'
+
+const MARKET_COLORS: Record<string, string> = {
+  US: '#2E6FFF', PH: '#FF4D6A', UK: '#8B5CF6', DE: '#FFB830',
+  NL: '#00C48C', FR: '#E30613', SE: '#FF8C42', NO: '#E879F9',
+  AU: '#0EA5E9', BE: '#6366F1',
+}
+
+const riskColor = (r: string) => ({ Low: '#12B76A', Medium: '#F79009', High: '#F04438' }[r] || '#98A2B3')
+const riskBg   = (r: string) => ({ Low: '#ECFDF3', Medium: '#FFFAEB', High: '#FEF3F2' }[r] || '#F2F4F7')
+const demandColor = (d: string) => ({ 'Very High': '#12B76A', High: '#2E6FFF', Medium: '#F79009', Low: '#98A2B3' }[d] || '#98A2B3')
+const compColor   = (c: string) => ({ Low: '#12B76A', Medium: '#F79009', High: '#F04438' }[c] || '#98A2B3')
+
+type FilterType = 'ALL' | MarketCode
 
 export default function RecommendationsPage() {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<'ALL'|'US'|'PH'|'BOTH'>('ALL')
-  const [platform, setPlatform] = useState<PlatformKey>('all')
+  const [filter, setFilter] = useState<FilterType>('ALL')
+  const [fetchedMarket, setFetchedMarket] = useState<FilterType>('ALL')
 
-  useEffect(() => {
-    fetch('/api/recommendations').then(r=>r.json()).then(j=>{setData(j.data||[]); setLoading(false)})
-  }, [])
+  const fetchData = async (market: FilterType) => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/recommendations?market=${market}`)
+      const json = await res.json()
+      setData(json.data || [])
+      setFetchedMarket(market)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const filtered = filter==='ALL' ? data : data.filter(r=>r.targetMarket===filter)
-  const riskColor = (r:string) => ({Low:'#00C48C',Medium:'#FFB830',High:'#FF4D6A'}[r]||'#9CA3AF')
-  const riskBg   = (r:string) => ({Low:'rgba(0,196,140,0.1)',Medium:'rgba(255,184,48,0.1)',High:'rgba(255,77,106,0.1)'}[r]||'#F3F4F6')
-  const compColor = (c:string) => ({Low:'#00C48C',Medium:'#FFB830',High:'#FF4D6A'}[c]||'#9CA3AF')
-  const activeMarket = filter === 'US' ? 'US' : filter === 'PH' ? 'PH' : undefined
+  useEffect(() => { fetchData('ALL') }, [])
+
+  const handleAll = () => {
+    setFilter('ALL')
+    if (fetchedMarket !== 'ALL') fetchData('ALL')
+  }
+
+  const filtered = filter === 'ALL' ? data : data.filter(r => r.targetMarket === filter)
+  const marketColor = (code: string) => MARKET_COLORS[code] || '#98A2B3'
+  const marketFlag  = (code: string) => MARKETS[code as MarketCode]?.flag || '🌍'
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'#F2F3F7' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F5F6FA' }}>
       <Sidebar />
-      <main style={{ flex:1, padding:'28px 32px', overflow:'auto' }}>
-        <div style={{ marginBottom:24 }}>
-          <h1 style={{ fontSize:22, fontWeight:700, color:'#1A1D2E', letterSpacing:'-0.4px' }}>✦ AI Product Picks</h1>
-          <p style={{ fontSize:13, color:'#6B7280', marginTop:3 }}>AI-scored opportunities ranked by demand, competition, and profit potential</p>
+      <main style={{ flex: 1, padding: '28px 32px', overflow: 'auto' }}>
+        <div className="page-header">
+          <h1>✦ AI Product Picks</h1>
+          <p>AI-scored opportunities ranked by demand, competition, and profit potential</p>
         </div>
 
-        {/* Market filter tabs */}
-        <div style={{ display:'flex', gap:2, marginBottom:14, background:'#EBEBEF', borderRadius:11, padding:3, width:'fit-content' }}>
-          {(['ALL','US','PH','BOTH'] as const).map(val=>(
-            <button key={val} onClick={()=>{setFilter(val);setPlatform('all')}} style={{ padding:'7px 20px', borderRadius:9, border:'none', cursor:'pointer', fontSize:13, fontWeight:filter===val?700:400, background:filter===val?'white':'transparent', color:filter===val?'#1A1D2E':'#9CA3AF', transition:'all 0.15s', boxShadow:filter===val?'0 1px 4px rgba(0,0,0,0.1)':'none' }}>
-              {val==='ALL'?`All (${data.length})`:val==='US'?'🇺🇸 US':val==='PH'?'🇵🇭 PH':'🌏 Both'}
-            </button>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+          <button onClick={handleAll} style={{ padding: '7px 16px', borderRadius: 8, border: `1px solid ${filter === 'ALL' ? '#2E6FFF' : '#EAECF0'}`, background: filter === 'ALL' ? '#EFF8FF' : 'white', color: filter === 'ALL' ? '#175CD3' : '#475467', fontSize: 13, fontWeight: filter === 'ALL' ? 600 : 400, cursor: 'pointer', fontFamily: 'Geist, sans-serif' }}>
+            All ({data.length})
+          </button>
+          <div style={{ width: 1, height: 24, background: '#EAECF0' }} />
+          {MARKET_CODES.map(code => {
+            const count = data.filter(r => r.targetMarket === code).length
+            const active = filter === code
+            const color = marketColor(code)
+            return (
+              <button key={code} onClick={() => setFilter(code)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, border: `1px solid ${active ? color : '#EAECF0'}`, background: active ? `${color}12` : 'white', color: active ? color : '#475467', fontSize: 13, fontWeight: active ? 600 : 400, cursor: 'pointer', fontFamily: 'Geist, sans-serif' }}>
+                <span>{marketFlag(code)}</span>
+                <span>{code}</span>
+                {count > 0 && <span style={{ fontSize: 11, background: active ? `${color}20` : '#F2F4F7', color: active ? color : '#98A2B3', padding: '1px 6px', borderRadius: 99, fontWeight: 600 }}>{count}</span>}
+              </button>
+            )
+          })}
+          <button onClick={() => fetchData(filter)} style={{ marginLeft: 'auto', padding: '7px 14px', borderRadius: 8, border: '1px solid #EAECF0', background: 'white', color: '#475467', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'Geist, sans-serif' }}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M14 8A6 6 0 112 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M14 4v4h-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Refresh
+          </button>
         </div>
 
-        <div style={{ marginBottom:18 }}>
-          <PlatformFilter value={platform} onChange={setPlatform} market={activeMarket} />
-        </div>
-
-        <div className="card" style={{ overflow:'hidden' }}>
+        <div className="card" style={{ overflow: 'hidden' }}>
           <table>
-            <thead>
-              <tr><th>Score</th><th>Product Idea</th><th>Market</th><th>Category</th><th>Demand</th><th>Competition</th><th>Risk</th><th>Est. Profit</th></tr>
-            </thead>
+            <thead><tr><th>Score</th><th>Product Idea</th><th>Market</th><th>Category</th><th>Demand</th><th>Competition</th><th>Risk</th><th>Est. Profit</th></tr></thead>
             <tbody>
-              {loading ? [...Array(8)].map((_,i)=>(
-                <tr key={i}>{[...Array(8)].map((_,j)=><td key={j}><div className="skeleton" style={{height:14}}/></td>)}</tr>
-              )) : filtered.map((r:any,i:number)=>(
+              {loading ? [...Array(10)].map((_, i) => (
+                <tr key={i}>{[...Array(8)].map((_, j) => <td key={j}><div className="skeleton" style={{ height: 14 }} /></td>)}</tr>
+              )) : filtered.length === 0 ? (
+                <tr><td colSpan={8} style={{ textAlign: 'center', color: '#98A2B3', padding: '32px' }}>No picks for this market — click Refresh</td></tr>
+              ) : filtered.map((r: any, i: number) => (
                 <tr key={i}>
-                  <td>
-                    <div style={{ width:42, height:42, borderRadius:10, background:r.score>=80?'linear-gradient(135deg,#00C48C,#38EF7D)':'linear-gradient(135deg,#FFB830,#FF8C42)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, fontWeight:800, color:'white' }}>{r.score}</div>
+                  <td><div style={{ width: 40, height: 40, borderRadius: 10, background: r.score >= 80 ? 'linear-gradient(135deg,#12B76A,#38EF7D)' : r.score >= 60 ? 'linear-gradient(135deg,#2E6FFF,#818CF8)' : 'linear-gradient(135deg,#F79009,#FF8C42)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 800, color: 'white', fontFamily: 'Geist Mono, monospace' }}>{r.score}</div></td>
+                  <td style={{ maxWidth: 220 }}>
+                    <div style={{ fontWeight: 600, color: '#101828', marginBottom: 3, fontSize: 13.5 }}>{r.productIdea}</div>
+                    <div style={{ fontSize: 11.5, color: '#98A2B3', lineHeight: 1.4 }}>{r.reason?.slice(0, 70)}...</div>
                   </td>
-                  <td style={{ maxWidth:220 }}>
-                    <div style={{ fontWeight:600, color:'#1A1D2E', marginBottom:3 }}>{r.productIdea}</div>
-                    <div style={{ fontSize:11, color:'#9CA3AF', lineHeight:1.4 }}>{r.reason?.slice(0,60)}...</div>
-                  </td>
-                  <td>
-                    <span style={{ fontSize:11, padding:'3px 10px', borderRadius:20, fontWeight:600, background:r.targetMarket==='US'?'rgba(46,111,255,0.1)':r.targetMarket==='PH'?'rgba(255,77,106,0.1)':'rgba(0,196,140,0.1)', color:r.targetMarket==='US'?'#2E6FFF':r.targetMarket==='PH'?'#FF4D6A':'#00C48C' }}>
-                      {r.targetMarket==='US'?'🇺🇸 US':r.targetMarket==='PH'?'🇵🇭 PH':'🌏 Both'}
-                    </span>
-                  </td>
-                  <td style={{ color:'#6B7280', fontSize:12 }}>{r.category}</td>
-                  <td><span style={{ fontSize:12, fontWeight:600, color:r.estimatedDemand==='Very High'?'#00C48C':r.estimatedDemand==='High'?'#2E6FFF':'#FFB830' }}>{r.estimatedDemand}</span></td>
-                  <td><span style={{ fontSize:12, fontWeight:600, color:compColor(r.competition) }}>{r.competition}</span></td>
-                  <td><span style={{ fontSize:11, padding:'3px 9px', borderRadius:20, background:riskBg(r.riskLevel), color:riskColor(r.riskLevel), fontWeight:600 }}>{r.riskLevel}</span></td>
-                  <td style={{ color:'#00C48C', fontWeight:700, fontFamily:'DM Mono', fontSize:12, whiteSpace:'nowrap' }}>{r.estimatedProfit}</td>
+                  <td><span style={{ fontSize: 12, padding: '3px 9px', borderRadius: 99, fontWeight: 600, background: `${marketColor(r.targetMarket)}15`, color: marketColor(r.targetMarket), display: 'inline-flex', alignItems: 'center', gap: 4 }}>{marketFlag(r.targetMarket)} {r.targetMarket}</span></td>
+                  <td style={{ color: '#475467', fontSize: 12.5 }}>{r.category}</td>
+                  <td><span style={{ fontSize: 12.5, fontWeight: 600, color: demandColor(r.estimatedDemand) }}>{r.estimatedDemand}</span></td>
+                  <td><span style={{ fontSize: 12.5, fontWeight: 600, color: compColor(r.competition) }}>{r.competition}</span></td>
+                  <td><span style={{ fontSize: 11.5, padding: '3px 9px', borderRadius: 99, background: riskBg(r.riskLevel), color: riskColor(r.riskLevel), fontWeight: 600 }}>{r.riskLevel}</span></td>
+                  <td style={{ color: '#12B76A', fontWeight: 700, fontFamily: 'Geist Mono, monospace', fontSize: 12.5, whiteSpace: 'nowrap' }}>{r.estimatedProfit}</td>
                 </tr>
               ))}
             </tbody>
