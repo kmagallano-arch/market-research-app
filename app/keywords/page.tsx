@@ -5,7 +5,7 @@ import MarketSelector from '@/components/MarketSelector'
 import PlatformFilter, { PlatformKey, PLATFORMS } from '@/components/PlatformFilter'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
-const categories = ['electronics','home-kitchen','automotive','cleaning-products','smart-home','gadgets']
+const categories = ['electronics','smart-home','home-kitchen','cleaning-products','automotive','tools-home-improvement','health-personal-care','beauty-skincare','fitness-sports','baby-kids','pet-supplies','outdoor-camping','toys-games','gadgets']
 const SCORE_KEYS: Record<MarketCode,string> = { US:'usScore',PH:'phScore',UK:'ukScore',DE:'deScore',NL:'nlScore',SE:'seScore',NO:'noScore',AU:'auScore',FR:'frScore',BE:'beScore' }
 
 export default function KeywordsPage() {

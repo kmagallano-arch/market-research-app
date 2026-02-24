@@ -5,7 +5,7 @@ import MarketSelector from '@/components/MarketSelector'
 import PlatformFilter, { PlatformKey, matchesPlatform, PLATFORMS } from '@/components/PlatformFilter'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
-const categories = ['electronics','home-kitchen','automotive','tools-home-improvement','toys-games','health-personal-care']
+const categories = ['electronics','smart-home','home-kitchen','cleaning-products','automotive','tools-home-improvement','health-personal-care','beauty-skincare','fitness-sports','baby-kids','pet-supplies','outdoor-camping','toys-games','gadgets']
 
 export default function BestsellersPage() {
   const [data, setData] = useState<any[]>([])

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     // For ALL: fetch just 10 items across markets to stay fast
     // For specific market: fetch 12 for that market
     const prompt = market === 'ALL'
-      ? `Generate 10 product recommendations for an electronics Shopify seller (dashcams, vacuums, WiFi, window cleaning robots) importing from China. Spread across US, UK, DE, PH, AU markets (2 each).
+      ? `Generate 10 product recommendations for an Shopify seller importing from China (electronics, dashcams, vacuums, WiFi gear, window cleaning robots, beauty/health products, fitness, pet supplies, baby/kids, home & kitchen). Spread across US, UK, DE, PH, AU markets (2 each).
 Return JSON: { "recommendations": [ { "productIdea": "string", "category": "string", "targetMarket": "US"|"UK"|"DE"|"PH"|"AU", "reason": "string", "estimatedDemand": "Very High"|"High"|"Medium"|"Low", "competition": "Low"|"Medium"|"High", "estimatedProfit": "string", "riskLevel": "Low"|"Medium"|"High", "score": 75 } ] }`
       : `Generate 12 product recommendations for an electronics Shopify seller for the ${market} market only. Use local currency.
 Return JSON: { "recommendations": [ { "productIdea": "string", "category": "string", "targetMarket": "${market}", "reason": "string", "estimatedDemand": "Very High"|"High"|"Medium"|"Low", "competition": "Low"|"Medium"|"High", "estimatedProfit": "string with ${market} currency", "riskLevel": "Low"|"Medium"|"High", "score": 75 } ] }`

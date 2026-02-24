@@ -36,7 +36,7 @@ You are a product trend analyst. Identify NEW up-and-coming products for: ${cont
 - Recently launched (0-18 months)
 - Strong search growth and conversion signals
 - Low competition, good for a Shopify seller sourcing from China
-- Focus on: electronics, home appliances, cleaning, auto, smart home
+- Focus on: electronics, home appliances, cleaning, auto, smart home, beauty & skincare, health & wellness, fitness, pet supplies, baby & kids, outdoor & camping
 
 Return JSON: { "products": [ {
   "name": "Product name",

@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar'
 import MarketSelector from '@/components/MarketSelector'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
-const POPULAR = ['robot vacuum cleaner','dashcam 4K','wifi mesh router','window cleaning robot','cordless vacuum','wireless earbuds','smart plug','portable charger']
+const POPULAR = ['robot vacuum cleaner','dashcam 4K','wifi mesh router','window cleaning robot','cordless vacuum','wireless earbuds','smart plug','face serum','electric toothbrush','yoga mat','baby monitor','pet camera','resistance bands','air purifier']
 
 type State = 'idle' | 'loading' | 'done' | 'error'
 

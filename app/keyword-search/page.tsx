@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar'
 import MarketSelector from '@/components/MarketSelector'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
-const POPULAR = ['robot vacuum','dashcam 4K','wifi mesh router','window cleaning robot','cordless vacuum','wireless earbuds','smart plug','portable charger','air purifier','security camera']
+const POPULAR = ['robot vacuum','dashcam 4K','wifi mesh router','window cleaning robot','cordless vacuum','wireless earbuds','smart plug','portable charger','air purifier','security camera','face serum','electric toothbrush','yoga mat','protein shaker','baby monitor','pet camera','LED desk lamp','resistance bands']
 
 const INTENT_COLOR: Record<string, { bg: string; color: string }> = {
   informational:  { bg: 'rgba(99,102,241,0.1)',  color: '#6366F1' },
