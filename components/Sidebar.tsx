@@ -19,9 +19,18 @@ const nav = [
   { href: '/price-history',  label: 'Price History',       icon: '📊', badge: 'NEW' },
   { href: '/market-sizing',  label: 'Market Sizing',       icon: '🌍', badge: 'NEW' },
   { section: 'Markets' },
-  { href: '/ph-market',      label: 'PH Market',           icon: '🇵🇭' },
-  { href: '/recommendations',label: 'AI Picks',            icon: '✦' },
-  { href: '/trends',         label: 'Trends',              icon: '📡' },
+  { href: '/ph-market',      label: 'Philippines',    icon: '🇵🇭' },
+  { href: '/uk-market',      label: 'United Kingdom', icon: '🇬🇧' },
+  { href: '/de-market',      label: 'Germany',        icon: '🇩🇪' },
+  { href: '/nl-market',      label: 'Netherlands',    icon: '🇳🇱' },
+  { href: '/fr-market',      label: 'France',         icon: '🇫🇷' },
+  { href: '/se-market',      label: 'Sweden',         icon: '🇸🇪' },
+  { href: '/no-market',      label: 'Norway',         icon: '🇳🇴' },
+  { href: '/au-market',      label: 'Australia',      icon: '🇦🇺' },
+  { href: '/be-market',      label: 'Belgium',        icon: '🇧🇪' },
+  { section: 'Tools' },
+  { href: '/recommendations',label: 'AI Picks',       icon: '✦' },
+  { href: '/trends',         label: 'Trends',         icon: '📡' },
 ]
 
 export default function Sidebar() {
@@ -134,7 +143,7 @@ export default function Sidebar() {
           <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#00C48C', boxShadow: '0 0 6px #00C48C' }} />
           <span style={{ fontSize: 12, color: 'rgba(180,170,255,0.4)' }}>Live · GPT-4o mini</span>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(180,170,255,0.25)' }}>13 tools · 7 markets</div>
+        <div style={{ fontSize: 11, color: 'rgba(180,170,255,0.25)' }}>13 tools · 9 markets</div>
       </div>
     </aside>
   )
