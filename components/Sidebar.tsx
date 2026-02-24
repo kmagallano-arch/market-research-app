@@ -67,7 +67,7 @@ export default function Sidebar() {
   return (
     <aside style={{
       width: 234,
-      background: 'linear-gradient(170deg, #1a0a1e 0%, #2d0f3d 50%, #1a0a2e 100%)',
+      background: 'linear-gradient(170deg, #0a0f2e 0%, #1e3a8a 50%, #0f1f5e 100%)',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
@@ -76,11 +76,11 @@ export default function Sidebar() {
       top: 0,
       height: '100vh',
       overflowY: 'auto',
-      borderRight: '1px solid rgba(255,255,255,0.07)',
+      borderRight: '1px solid rgba(255,255,255,0.08)',
     }}>
       {/* Orbs */}
-      <div style={{ position: 'absolute', top: -60, right: -60, width: 180, height: 180, borderRadius: '50%', background: 'rgba(180,60,220,0.12)', filter: 'blur(50px)', pointerEvents: 'none' }}/>
-      <div style={{ position: 'absolute', bottom: 60, left: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(100,20,180,0.1)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
+      <div style={{ position: 'absolute', top: -60, right: -60, width: 180, height: 180, borderRadius: '50%', background: 'rgba(59,130,246,0.15)', filter: 'blur(50px)', pointerEvents: 'none' }}/>
+      <div style={{ position: 'absolute', bottom: 60, left: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(30,58,138,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
 
       {/* Logo */}
       <div style={{ padding: '22px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0, position: 'relative' }}>
