@@ -103,7 +103,7 @@ export default function Sidebar() {
             title="Click to upload your logo"
           >
             <img
-              src={logoUrl || '/logo.png?v=3'}
+              src={logoUrl || '/logo-v2.png'}
               alt="Logo"
               style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }}
             />
