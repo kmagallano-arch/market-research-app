@@ -10,8 +10,19 @@ const MARKET_CONTEXT: Record<string, string> = {
   UK: 'UK Amazon and British retail market',
   DE: 'German Amazon.de and German retail market',
   NL: 'Dutch Bol.com and Amazon Netherlands',
+  FR: 'French Amazon.fr and Cdiscount market',
   SE: 'Swedish Amazon SE, CDON and Scandinavian market',
   NO: 'Norwegian market and Nordic retail',
+  AU: 'Australian Amazon AU and Catch.com market',
+  BE: 'Belgian Bol.com and Amazon Belgium market',
+}
+
+const MARKET_PLATFORMS: Record<string, string[]> = {
+  US: ['Amazon','eBay'], PH: ['Shopee','Lazada','TikTok Shop'],
+  UK: ['Amazon','eBay','TikTok Shop'], DE: ['Amazon'],
+  NL: ['Bol.com','Amazon'], FR: ['Amazon','Cdiscount','Fnac'],
+  SE: ['Amazon','CDON'], NO: ['Amazon','Elkjøp'],
+  AU: ['Amazon','eBay','Catch.com'], BE: ['Bol.com','Amazon','Fnac'],
 }
 
 export async function GET(req: NextRequest) {
@@ -42,8 +53,11 @@ Return JSON: { "products": [ {
   "sourcingDifficulty": "Easy",
   "competitionLevel": "Low",
   "topKeywords": ["kw1","kw2","kw3"],
+  "platform": "platform name",
   "trend": "exploding"
 } ] }
+
+- platform: must be one of the available platforms for ${market}: ${(MARKET_PLATFORMS[market]||['Amazon']).join(', ')}
 
 - momentum: 0-100
 - trend: "exploding", "rising", or "emerging"

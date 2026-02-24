@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Sidebar from '@/components/Sidebar'
 import MarketSelector from '@/components/MarketSelector'
-import PlatformFilter, { PlatformKey } from '@/components/PlatformFilter'
+import PlatformFilter, { PlatformKey, matchesPlatform } from '@/components/PlatformFilter'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
 export default function RisingPage() {
@@ -18,7 +18,7 @@ export default function RisingPage() {
     fetch(`/api/rising?market=${market}`).then(r=>r.json()).then(j=>{setData(j.data||[]); setLoading(false)})
   }, [market])
 
-  const filtered = filter==='all' ? data : data.filter(p=>p.trend===filter)
+  const filtered = data.filter(p => (filter==='all' || p.trend===filter) && matchesPlatform(p, platform))
   const trendConfig: Record<string,{color:string;bg:string;icon:string;label:string}> = {
     exploding:{color:'#FF4D6A',bg:'rgba(255,77,106,0.1)',icon:'🔥',label:'Exploding'},
     rising:   {color:'#FFB830',bg:'rgba(255,184,48,0.1)',icon:'📈',label:'Rising'},
