@@ -9,30 +9,25 @@ export async function GET(req: NextRequest) {
   const market = searchParams.get('market') || 'ALL'
 
   try {
-    const data = await askOpenAIJSON<{ recommendations: any[] }>(`
-You are a product sourcing expert for a Shopify business importing electronics from China.
-Products already sold: dashcams, window cleaning robots, vacuums, WiFi equipment.
+    // For ALL: fetch just 10 items across markets to stay fast
+    // For specific market: fetch 12 for that market
+    const prompt = market === 'ALL'
+      ? `Generate 10 product recommendations for an electronics Shopify seller (dashcams, vacuums, WiFi, window cleaning robots) importing from China. Spread across US, UK, DE, PH, AU markets (2 each).
+Return JSON: { "recommendations": [ { "productIdea": "string", "category": "string", "targetMarket": "US"|"UK"|"DE"|"PH"|"AU", "reason": "string", "estimatedDemand": "Very High"|"High"|"Medium"|"Low", "competition": "Low"|"Medium"|"High", "estimatedProfit": "string", "riskLevel": "Low"|"Medium"|"High", "score": 75 } ] }`
+      : `Generate 12 product recommendations for an electronics Shopify seller for the ${market} market only. Use local currency.
+Return JSON: { "recommendations": [ { "productIdea": "string", "category": "string", "targetMarket": "${market}", "reason": "string", "estimatedDemand": "Very High"|"High"|"Medium"|"Low", "competition": "Low"|"Medium"|"High", "estimatedProfit": "string with ${market} currency", "riskLevel": "Low"|"Medium"|"High", "score": 75 } ] }`
 
-${market === 'ALL'
-  ? 'Generate exactly 20 product recommendations, 2 each for: US, UK, DE, NL, FR, SE, NO, AU, BE, PH.'
-  : `Generate exactly 12 product recommendations all for ${market} market.`}
+    const data = await askOpenAIJSON<{ recommendations: any[] }>(prompt)
 
-Return JSON: { "recommendations": [ {
-  "productIdea": "string",
-  "category": "string",
-  "targetMarket": "${market === 'ALL' ? 'one of: US,UK,DE,NL,FR,SE,NO,AU,BE,PH' : market}",
-  "reason": "string (max 20 words)",
-  "estimatedDemand": "Very High"|"High"|"Medium"|"Low",
-  "competition": "Low"|"Medium"|"High",
-  "estimatedProfit": "profit range with local currency symbol",
-  "riskLevel": "Low"|"Medium"|"High",
-  "score": 0-100
-} ] }`)
+    if (!data?.recommendations?.length) {
+      return NextResponse.json({ success: false, error: 'No recommendations returned', data: [] }, { status: 500 })
+    }
 
     const response = NextResponse.json({ success: true, data: data.recommendations, market })
     response.headers.set('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600')
     return response
   } catch (err) {
-    return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
+    console.error('Recommendations error:', err)
+    return NextResponse.json({ success: false, error: String(err), data: [] }, { status: 500 })
   }
 }
