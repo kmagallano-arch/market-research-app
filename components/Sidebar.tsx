@@ -94,7 +94,7 @@ export default function Sidebar() {
               width: 80, height: 80, borderRadius: '50%',
               margin: '0 auto 12px', cursor: 'pointer',
               position: 'relative', overflow: 'hidden',
-              background: 'rgba(255,255,255,0.95)',
+              background: 'transparent',
               boxShadow: logoHover
                 ? '0 0 0 3px rgba(255,255,255,0.6), 0 8px 28px rgba(0,0,0,0.2)'
                 : '0 4px 20px rgba(0,0,0,0.15), 0 0 0 2px rgba(255,255,255,0.2)',
@@ -103,7 +103,7 @@ export default function Sidebar() {
             title="Click to upload your logo"
           >
             <img
-              src={logoUrl || '/logo.png'}
+              src={logoUrl || '/logo.png?v=3'}
               alt="Logo"
               style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }}
             />
@@ -133,7 +133,7 @@ export default function Sidebar() {
               return (
                 <div key={idx} style={{
                   fontSize: 10, fontWeight: 700,
-                  color: 'rgba(186,230,253,0.5)',
+                  color: 'rgba(255,255,255,0.45)',
                   letterSpacing: '0.9px',
                   textTransform: 'uppercase',
                   padding: '14px 8px 4px',
@@ -163,7 +163,7 @@ export default function Sidebar() {
                   fontSize: 13,
                   fontWeight: active ? 600 : 400,
                   transition: 'all 0.15s ease',
-                  color: active ? '#ffffff' : isHovered ? '#ffffff' : 'rgba(186,230,253,0.75)',
+                  color: active ? '#ffffff' : isHovered ? '#ffffff' : 'rgba(255,255,255,0.90)',
                   background: active
                     ? 'rgba(255,255,255,0.18)'
                     : isHovered
@@ -204,9 +204,9 @@ export default function Sidebar() {
         <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.1)', flexShrink: 0, position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
             <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', boxShadow: '0 0 6px #34d399' }} />
-            <span style={{ fontSize: 12, color: 'rgba(186,230,253,0.6)' }}>Live · GPT-4o mini</span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>Live · GPT-4o mini</span>
           </div>
-          <div style={{ fontSize: 11, color: 'rgba(186,230,253,0.35)' }}>13 tools · 9 markets</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>13 tools · 9 markets</div>
         </div>
       </aside>
     </>
