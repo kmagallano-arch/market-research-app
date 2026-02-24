@@ -1,26 +1,53 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Sidebar from '@/components/Sidebar'
 import MarketSelector from '@/components/MarketSelector'
 import { MARKETS, MarketCode } from '@/lib/markets'
 
 const POPULAR = ['robot vacuum cleaner','dashcam 4K','wifi mesh router','window cleaning robot','cordless vacuum','wireless earbuds','smart plug','portable charger']
 
+type StreamState = 'idle' | 'streaming' | 'done' | 'error'
+
 export default function CompetitorPage() {
   const [data, setData] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState<StreamState>('idle')
+  const [streamText, setStreamText] = useState('')
   const [market, setMarket] = useState<MarketCode>('US')
-  const [product, setProduct] = useState('robot vacuum cleaner')
+  const [product, setProduct] = useState('')
   const [input, setInput] = useState('robot vacuum cleaner')
   const m = MARKETS[market]
 
-  const search = () => { setProduct(input); }
+  const analyze = async (p?: string) => {
+    const query = p || input
+    setProduct(query)
+    setData(null)
+    setStreamText('')
+    setState('streaming')
 
-  useEffect(() => {
-    setLoading(true)
-    fetch(`/api/competitor?product=${encodeURIComponent(product)}&market=${market}`)
-      .then(r=>r.json()).then(j=>{setData(j.data); setLoading(false)})
-  }, [product, market])
+    try {
+      const res = await fetch(`/api/competitor-stream?product=${encodeURIComponent(query)}&market=${market}`)
+      if (!res.body) throw new Error('No stream')
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let full = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const chunk = decoder.decode(value)
+        full += chunk
+        setStreamText(full)
+      }
+
+      const cleaned = full.replace(/```json|```/g, '').trim()
+      const parsed = JSON.parse(cleaned)
+      setData(parsed.data)
+      setState('done')
+    } catch (e) {
+      setState('error')
+    }
+  }
 
   const diffColor = (d:string) => ({Easy:'#00C48C',Medium:'#FFB830',Hard:'#FF4D6A'}[d]||'#9CA3AF')
   const diffBg   = (d:string) => ({Easy:'rgba(0,196,140,0.1)',Medium:'rgba(255,184,48,0.1)',Hard:'rgba(255,77,106,0.1)'}[d]||'#F3F4F6')
@@ -39,32 +66,56 @@ export default function CompetitorPage() {
           <MarketSelector value={market} onChange={setMarket}/>
         </div>
 
-        <div style={{display:'flex',gap:10,marginBottom:16,alignItems:'center'}}>
-          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="Enter product to analyze..." style={{flex:1,maxWidth:400,padding:'10px 16px',borderRadius:10,border:'1.5px solid #E8E9EF',fontSize:14,outline:'none',fontFamily:'DM Sans,sans-serif'}}/>
-          <button onClick={search} style={{padding:'10px 22px',background:'#2E6FFF',color:'white',border:'none',borderRadius:10,fontSize:14,fontWeight:600,cursor:'pointer'}}>Analyze</button>
+        <div style={{display:'flex',gap:10,marginBottom:14,alignItems:'center'}}>
+          <input
+            value={input}
+            onChange={e=>setInput(e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&analyze()}
+            placeholder="Enter product to analyze..."
+            style={{flex:1,maxWidth:400,padding:'10px 16px',borderRadius:10,border:'1.5px solid #E8E9EF',fontSize:14,outline:'none',fontFamily:'DM Sans,sans-serif'}}
+          />
+          <button
+            onClick={()=>analyze()}
+            disabled={state==='streaming'}
+            style={{padding:'10px 22px',background:state==='streaming'?'#9CA3AF':'#2E6FFF',color:'white',border:'none',borderRadius:10,fontSize:14,fontWeight:600,cursor:state==='streaming'?'not-allowed':'pointer',transition:'background 0.2s'}}
+          >
+            {state==='streaming' ? 'Analyzing...' : 'Analyze'}
+          </button>
         </div>
 
-        <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap'}}>
+        <div style={{display:'flex',gap:8,marginBottom:24,flexWrap:'wrap'}}>
           {POPULAR.map(p=>(
-            <button key={p} onClick={()=>{setInput(p);setProduct(p)}} style={{padding:'5px 13px',borderRadius:20,border:`1.5px solid ${product===p?m.color:'#E8E9EF'}`,background:product===p?`${m.color}12`:'white',color:product===p?m.color:'#6B7280',fontSize:12,cursor:'pointer',fontWeight:product===p?700:400}}>{p}</button>
+            <button key={p} onClick={()=>{setInput(p);analyze(p)}} style={{padding:'5px 13px',borderRadius:20,border:`1.5px solid ${product===p?m.color:'#E8E9EF'}`,background:product===p?`${m.color}12`:'white',color:product===p?m.color:'#6B7280',fontSize:12,cursor:'pointer',fontWeight:product===p?700:400}}>
+              {p}
+            </button>
           ))}
         </div>
 
-        {loading ? (
-          <div style={{display:'flex',alignItems:'center',gap:10,padding:'40px 20px',color:'#9CA3AF',fontSize:14}}>
-            <div style={{width:16,height:16,borderRadius:'50%',border:'2px solid #E8E9EF',borderTopColor:m.color,animation:'spin 0.8s linear infinite'}}/>
-            Analyzing competitors for "{product}"...
+        {/* Streaming progress indicator */}
+        {state==='streaming' && (
+          <div style={{marginBottom:20}}>
+            <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12,padding:'14px 18px',background:'white',borderRadius:12,border:'1px solid #E8E9EF'}}>
+              <div style={{width:14,height:14,borderRadius:'50%',border:'2px solid #E8E9EF',borderTopColor:m.color,animation:'spin 0.7s linear infinite',flexShrink:0}}/>
+              <span style={{fontSize:14,color:'#6B7280'}}>Scanning competitors for <b style={{color:'#1A1D2E'}}>{product || input}</b> in {m.label}...</span>
+              <span style={{marginLeft:'auto',fontSize:12,color:'#9CA3AF',fontFamily:'DM Mono'}}>{streamText.length} chars</span>
+            </div>
+            {/* Live JSON preview */}
+            <div style={{padding:'12px 16px',background:'#0F1117',borderRadius:10,fontFamily:'DM Mono',fontSize:11,color:'#7DD3FC',maxHeight:120,overflow:'hidden',position:'relative'}}>
+              <div style={{position:'absolute',bottom:0,left:0,right:0,height:40,background:'linear-gradient(transparent,#0F1117)'}}/>
+              {streamText.slice(-400)}
+            </div>
           </div>
-        ) : data && (
+        )}
+
+        {state==='done' && data && (
           <div style={{display:'flex',flexDirection:'column',gap:16}}>
-            {/* Summary */}
             {data.marketSummary && (
               <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12}}>
                 {[
-                  {label:'Avg Price',    value:data.marketSummary.avgPrice,          color:m.color},
-                  {label:'Avg Rating',   value:`${data.marketSummary.avgRating}★`,    color:'#FFB830'},
-                  {label:'Total Revenue',value:data.marketSummary.totalMonthlyRevenue,color:'#00C48C'},
-                  {label:'Entry Difficulty', value:data.marketSummary.entryDifficulty, color:diffColor(data.marketSummary.entryDifficulty)},
+                  {label:'Avg Price',       value:data.marketSummary.avgPrice,             color:m.color},
+                  {label:'Avg Rating',      value:`${data.marketSummary.avgRating}★`,       color:'#FFB830'},
+                  {label:'Total Revenue',   value:data.marketSummary.totalMonthlyRevenue,   color:'#00C48C'},
+                  {label:'Entry Difficulty',value:data.marketSummary.entryDifficulty,       color:diffColor(data.marketSummary.entryDifficulty)},
                 ].map((c,i)=>(
                   <div key={i} className="card" style={{padding:'16px 18px'}}>
                     <div style={{fontSize:11,color:'#9CA3AF',textTransform:'uppercase',letterSpacing:'0.5px',marginBottom:6}}>{c.label}</div>
@@ -74,7 +125,6 @@ export default function CompetitorPage() {
               </div>
             )}
 
-            {/* Competitor table */}
             <div className="card" style={{overflow:'hidden'}}>
               <div style={{padding:'16px 20px',borderBottom:'1px solid #F0F1F5',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <div style={{fontSize:15,fontWeight:700,color:'#1A1D2E'}}>Top Competitors — {data.product}</div>
@@ -97,7 +147,9 @@ export default function CompetitorPage() {
                       <td style={{color:'#9CA3AF',fontFamily:'DM Mono',fontSize:12}}>#{c.bsr?.toLocaleString()}</td>
                       <td>
                         <div style={{display:'flex',alignItems:'center',gap:6}}>
-                          <div style={{width:50,height:5,background:'#F0F1F5',borderRadius:3}}><div style={{width:`${c.listingScore}%`,height:'100%',background:c.listingScore>=70?'#00C48C':c.listingScore>=50?'#FFB830':'#FF4D6A',borderRadius:3}}/></div>
+                          <div style={{width:50,height:5,background:'#F0F1F5',borderRadius:3}}>
+                            <div style={{width:`${c.listingScore}%`,height:'100%',background:c.listingScore>=70?'#00C48C':c.listingScore>=50?'#FFB830':'#FF4D6A',borderRadius:3}}/>
+                          </div>
                           <span style={{fontSize:12,fontFamily:'DM Mono',fontWeight:700,color:c.listingScore>=70?'#00C48C':c.listingScore>=50?'#FFB830':'#FF4D6A'}}>{c.listingScore}</span>
                         </div>
                       </td>
@@ -108,7 +160,6 @@ export default function CompetitorPage() {
               </table>
             </div>
 
-            {/* Keyword gaps + recommendation */}
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
               <div className="card" style={{padding:'18px 20px'}}>
                 <div style={{fontSize:15,fontWeight:700,color:'#1A1D2E',marginBottom:14}}>🔑 Keyword Gaps</div>
@@ -124,6 +175,12 @@ export default function CompetitorPage() {
                 {data.pricingOpportunity && <div style={{marginTop:10,padding:'8px 12px',background:'rgba(0,196,140,0.08)',borderRadius:8,fontSize:13,color:'#00C48C',fontWeight:500}}>💰 {data.pricingOpportunity}</div>}
               </div>
             </div>
+          </div>
+        )}
+
+        {state==='error' && (
+          <div style={{padding:'20px',background:'rgba(255,77,106,0.08)',borderRadius:12,color:'#FF4D6A',fontSize:14}}>
+            Failed to analyze. Please try again.
           </div>
         )}
       </main>

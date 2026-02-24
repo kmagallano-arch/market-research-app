@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
 
 export const runtime = 'nodejs'
-export const revalidate = 3600
+export const revalidate = 86400
 
 const MARKET_CONTEXT: Record<string, string> = {
   US: 'US Amazon market',

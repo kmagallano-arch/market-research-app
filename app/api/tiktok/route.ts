@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { askOpenAIJSON } from '@/lib/openai'
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export async function GET(req: NextRequest) {
   const market = req.nextUrl.searchParams.get('market') || 'PH'
