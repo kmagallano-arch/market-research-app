@@ -12,16 +12,13 @@
   --text2: #6B7280;
   --text3: #9CA3AF;
   --accent: #2E6FFF;
-  --accent-dim: rgba(46,111,255,0.1);
   --us: #2E6FFF;
   --ph: #FF4D6A;
   --green: #00C48C;
   --amber: #FFB830;
   --purple: #8B5CF6;
-  --red: #FF4D6A;
   --radius: 16px;
   --shadow: 0 2px 12px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,8 +27,8 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -68,33 +65,27 @@ body {
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 600;
+  font-size: 12px; font-weight: 600;
 }
 .badge-us  { background: rgba(46,111,255,0.1);  color: #2E6FFF; }
 .badge-ph  { background: rgba(255,77,106,0.1);  color: #FF4D6A; }
 .badge-both{ background: rgba(0,196,140,0.1);   color: #00C48C; }
-.badge-uk  { background: rgba(139,92,246,0.1);  color: #8B5CF6; }
-.badge-de  { background: rgba(255,184,48,0.1);  color: #FFB830; }
 
-/* Table styles — light */
 table { width: 100%; border-collapse: collapse; }
 th {
-  padding: 10px 16px; text-align: left;
-  font-size: 10px; color: var(--text3);
+  padding: 11px 16px; text-align: left;
+  font-size: 11px; color: var(--text3);
   font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
   background: #FAFBFC; border-bottom: 1px solid var(--border);
 }
-td { padding: 12px 16px; border-bottom: 1px solid var(--border2); font-size: 13px; }
+td { padding: 13px 16px; border-bottom: 1px solid var(--border2); font-size: 14px; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #FAFBFC; }
 
-/* Pill select / toggle */
-.pill-group {
-  display: flex; background: #F0F1F5; border-radius: 10px; padding: 3px; gap: 2px;
-}
+.pill-group { display: flex; background: #F0F1F5; border-radius: 10px; padding: 3px; gap: 2px; }
 .pill-btn {
-  padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer;
-  font-size: 12px; font-weight: 500; color: var(--text2);
+  padding: 7px 16px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text2);
   background: transparent; transition: all 0.15s;
 }
 .pill-btn.active {
@@ -103,10 +94,9 @@ tr:hover td { background: #FAFBFC; }
 }
 
 select {
-  padding: 7px 12px; background: white; border: 1px solid var(--border);
-  color: var(--text); border-radius: 9px; font-size: 13px; outline: none;
+  padding: 8px 14px; background: white; border: 1px solid var(--border);
+  color: var(--text); border-radius: 9px; font-size: 14px; outline: none;
   font-family: 'DM Sans', sans-serif; cursor: pointer;
 }
 select:focus { border-color: var(--accent); }
-
 button { font-family: 'DM Sans', sans-serif; }
