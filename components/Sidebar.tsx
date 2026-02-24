@@ -1,0 +1,84 @@
+'use client'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+const nav = [
+  { href: '/', label: 'Dashboard', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.7"/></svg> },
+  { href: '/bestsellers', label: 'Bestsellers', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6L8 1Z" fill="currentColor"/></svg> },
+  { href: '/keywords', label: 'Keywords', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5"/><path d="M11 11L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg> },
+  { href: '/rising', label: 'Rising Products', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,8 8,10 12,5 15,7" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/><polyline points="11,3 15,3 15,7" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>, badge: 'NEW' },
+  { href: '/ph-market', label: 'PH Market', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/><path d="M8 1.5C8 1.5 5 5 5 8s3 6.5 3 6.5M8 1.5C8 1.5 11 5 11 8s-3 6.5-3 6.5" stroke="currentColor" strokeWidth="1.2" opacity="0.7"/><path d="M1.5 8h13" stroke="currentColor" strokeWidth="1.2" opacity="0.7"/></svg> },
+  { href: '/recommendations', label: 'AI Picks', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1l1.5 4.5H14l-3.7 2.7 1.4 4.3L8 10.1l-3.7 2.4 1.4-4.3L2 5.5h4.5L8 1z" fill="currentColor"/></svg> },
+  { href: '/trends', label: 'Trends', icon: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><polyline points="1,12 5,7 8,9 12,4 15,6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+]
+
+export default function Sidebar() {
+  const path = usePathname()
+  return (
+    <aside style={{
+      width: 220, background: '#1A1D2E',
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      flexShrink: 0, position: 'sticky', top: 0, height: '100vh',
+    }}>
+      {/* Logo */}
+      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #2E6FFF, #764BA2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(46,111,255,0.4)' }}>
+            <svg width="21" height="21" viewBox="0 0 20 20" fill="none">
+              <ellipse cx="10" cy="13" rx="7" ry="5" fill="white" opacity="0.95"/>
+              <circle cx="14.5" cy="8" r="3.5" fill="white" opacity="0.95"/>
+              <path d="M17.5 8.5L20.5 7.5L19.5 9.5L17.5 9z" fill="#FFB830"/>
+              <circle cx="15.5" cy="7" r="0.8" fill="#1A1D2E"/>
+              <path d="M6 12C7 10 9 9.5 11 10" stroke="#2E6FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
+            </svg>
+          </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'white', letterSpacing: '-0.3px' }}>Brainy Duck</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.3px' }}>Market Intelligence</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav style={{ padding: '14px 10px', flex: 1, overflowY: 'auto' }}>
+        <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.8px', textTransform: 'uppercase', padding: '0 8px', marginBottom: 6 }}>Research</div>
+        {nav.map(item => {
+          const active = path === item.href
+          return (
+            <Link key={item.href} href={item.href} style={{
+              display: 'flex', alignItems: 'center', gap: 9,
+              padding: '8px 10px', borderRadius: 9, marginBottom: 2,
+              color: active ? 'white' : 'rgba(255,255,255,0.45)',
+              background: active ? 'rgba(255,255,255,0.1)' : 'transparent',
+              textDecoration: 'none', fontSize: 13,
+              fontWeight: active ? 600 : 400,
+              transition: 'all 0.15s',
+            }}>
+              <span style={{ color: active ? '#2E6FFF' : 'rgba(255,255,255,0.3)', flexShrink: 0 }}>{item.icon}</span>
+              <span style={{ flex: 1 }}>{item.label}</span>
+              {(item as any).badge && <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(255,77,106,0.25)', color: '#FF6B8A', borderRadius: 4, fontWeight: 700 }}>{(item as any).badge}</span>}
+            </Link>
+          )
+        })}
+
+        <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.8px', textTransform: 'uppercase', padding: '14px 8px 6px' }}>Markets</div>
+        <div style={{ padding: '10px 12px', borderRadius: 9, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {[['🇺🇸','US'],['🇵🇭','PH'],['🇬🇧','UK'],['🇩🇪','DE'],['🇳🇱','NL'],['🇸🇪','SE'],['🇳🇴','NO']].map(([flag,code]) => (
+            <div key={code} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{flag} {code}</span>
+              <span style={{ fontSize: 10, color: '#00C48C', fontWeight: 600 }}>Active</span>
+            </div>
+          ))}
+        </div>
+      </nav>
+
+      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00C48C', boxShadow: '0 0 5px #00C48C' }} />
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>Live · GPT-4o mini</span>
+        </div>
+        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>Cache: 1hr · Auto-refresh</div>
+      </div>
+    </aside>
+  )
+}
