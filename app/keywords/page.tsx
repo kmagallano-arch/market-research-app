@@ -6,7 +6,7 @@ import PlatformFilter, { PlatformKey, PLATFORMS } from '@/components/PlatformFil
 import { MARKETS, MarketCode } from '@/lib/markets'
 
 const categories = ['electronics','home-kitchen','automotive','cleaning-products','smart-home','gadgets']
-const SCORE_KEYS: Record<MarketCode,string> = { US:'usScore',PH:'phScore',UK:'ukScore',DE:'deScore',NL:'nlScore',SE:'seScore',NO:'noScore' }
+const SCORE_KEYS: Record<MarketCode,string> = { US:'usScore',PH:'phScore',UK:'ukScore',DE:'deScore',NL:'nlScore',SE:'seScore',NO:'noScore',AU:'auScore',FR:'frScore',BE:'beScore' }
 
 export default function KeywordsPage() {
   const [data, setData] = useState<any[]>([])
