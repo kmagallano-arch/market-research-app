@@ -24,7 +24,7 @@ export default function NetherlandsMarketPage() {
   const filteredProducts = (data?.trendingProducts||[]).filter((p:any) => {
     if (platform === 'all') return true
     const str = (p.platform||'').toLowerCase()
-    return PLATFORMS[platform]?.keywords.some((kw:string) => str.includes(kw))
+    return str.includes(platform) || str.includes((PLATFORMS[platform]?.label||'').toLowerCase())
   })
 
   const platformBadge = (pname: string) => {
