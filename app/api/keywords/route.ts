@@ -65,7 +65,7 @@ Generate 30 keywords. Include:
 trend array must be exactly 12 numbers (monthly data).
 Make data specific and realistic for ${market} market.`)
       return result.keywords
-    }, 15)
+    }, 30)
 
     return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {

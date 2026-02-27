@@ -69,7 +69,7 @@ Include mix of: established brands, emerging brands, generic sellers.
 Vary BSR from top 100 to top 5000. Include all platforms naturally.
 Make data specific and realistic for ${ctx.desc} market.`)
       return result.products
-    }, 15)
+    }, 30)
 
     return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {

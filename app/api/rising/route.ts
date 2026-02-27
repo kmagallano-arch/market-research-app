@@ -66,7 +66,7 @@ Return JSON: { "products": [ {
 
 Generate 20 products. Mix of categories. momentum 0-100. Make data specific and realistic.`)
       return result.products
-    }, 15)
+    }, 30)
 
     return NextResponse.json({ success: true, data, market, _cached: cached, _age: ageMinutes })
   } catch (err) {

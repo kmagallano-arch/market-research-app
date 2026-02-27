@@ -11,7 +11,7 @@ export async function askOpenAIJSON<T>(prompt: string): Promise<T> {
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-5',
-      max_tokens: 4096,
+      max_tokens: 3000,
       system: 'You are a market research AI. Always respond with valid JSON only, no markdown, no explanation, no code fences.',
       messages: [
         { role: 'user', content: prompt }

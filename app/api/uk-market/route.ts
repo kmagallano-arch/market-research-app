@@ -63,7 +63,7 @@ Return JSON: {
 Generate 8 top categories, 30 trending products in price range £8-£150.
 Mix platforms naturally. Be specific with United Kingdom market context. Include local brands.`)
       return result
-    }, 15)
+    }, 60)
 
     return NextResponse.json({ success: true, data, _cached: cached, _age: ageMinutes })
   } catch (err) {

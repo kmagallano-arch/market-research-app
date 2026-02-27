@@ -56,7 +56,7 @@ Return JSON: { "data": [ {
 
 Generate 20 viral products. Mix trending and emerging. Make data realistic for ${market} market.`)
       return result.data
-    }, 15)
+    }, 30)
 
     return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {

@@ -41,7 +41,7 @@ Return JSON: { "data": [ {
 
 Generate 20 trending topics. monthlyData must be exactly 12 numbers 0-100. Make insights actionable.`)
       return result.data
-    }, 15)
+    }, 30)
 
     return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {
