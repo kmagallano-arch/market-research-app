@@ -1,16 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStaleCache, setCache } from '@/lib/supabase'
 import { askOpenAIJSON } from '@/lib/openai'
+import { withCache } from '@/lib/supabase'
 
-export const revalidate = 86400
+export const runtime = 'nodejs'
+export const maxDuration = 60
 
 export async function GET(req: NextRequest) {
-  const category = req.nextUrl.searchParams.get('category') || 'electronics'
+  const { searchParams } = new URL(req.url)
+  const category = searchParams.get('category') || 'electronics'
+  const market = searchParams.get('market') || 'US'
+  const cacheKey = `exploding:${market}:${category}`
+
   try {
-    const data = await askOpenAIJSON(`You are an Exploding Topics-style keyword velocity tracker for ${category}. Find keywords growing fast but not yet saturated.
-Return JSON: { "data": [ { "keyword": string, "velocityScore": number, "searchVolume": string, "volumeGrowth": string, "peakEstimate": string, "stage": "pre-peak"|"early"|"growing"|"peaking"|"post-peak", "relatedTopics": string[], "markets": string[], "category": string, "opportunity": "high"|"medium"|"low", "competitionNow": "low"|"medium"|"high", "whyExploding": string, "cpcEstimate": string, "monthlyData": number[] } ] } — return 15 keywords, monthlyData must be exactly 12 numbers. Only JSON.`)
-    return NextResponse.json(data)
-  } catch (e) {
-    return NextResponse.json({ error: 'Failed', data: [] }, { status: 500 })
+    const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
+      const result = await askOpenAIJSON<{ data: any[] }>(`
+You are a trend intelligence analyst. Identify exploding search topics for "${category}" in ${market} market.
+
+Return JSON: { "data": [ {
+  "keyword": "trend keyword",
+  "relatedProduct": "specific product to sell",
+  "velocityScore": 85,
+  "searchVolume": "XX,XXX/mo",
+  "volumeGrowth": "+XXX% in 60 days",
+  "peakEstimate": "when it will peak",
+  "stage": "pre-peak"|"early"|"growing"|"peaking"|"post-peak",
+  "relatedTopics": ["topic1","topic2","topic3","topic4"],
+  "markets": ["${market}","US"],
+  "category": "${category}",
+  "opportunity": "high"|"medium"|"low",
+  "competitionNow": "low"|"medium"|"high",
+  "whyExploding": "2 sentence explanation",
+  "cpcEstimate": "currency + amount",
+  "monthlyData": [20,25,30,40,55,70,85,90,88,82,78,72],
+  "socialSignals": ["TikTok viral","Reddit trending"],
+  "estimatedRevenue": "revenue opportunity",
+  "actionableInsight": "what seller should do now",
+  "timeWindow": "X weeks before saturation",
+  "sourcingTip": "how to source this"
+} ] }
+
+Generate 20 trending topics. monthlyData must be exactly 12 numbers 0-100. Make insights actionable.`)
+      return result.data
+    }, 15)
+
+    return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
+  } catch (err) {
+    return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }
 }

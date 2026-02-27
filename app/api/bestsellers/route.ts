@@ -3,19 +3,19 @@ import { askOpenAIJSON } from '@/lib/openai'
 import { withCache } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
-export const maxDuration = 30
+export const maxDuration = 60
 
-const MARKET_CONTEXT: Record<string, { desc: string; platforms: string[] }> = {
-  US: { desc: 'Amazon.com USA - USD pricing',                           platforms: ['Amazon','eBay'] },
-  PH: { desc: 'Shopee Philippines and Lazada Philippines - PHP pricing', platforms: ['Shopee','Lazada','TikTok Shop'] },
-  UK: { desc: 'Amazon UK - GBP pricing',                                platforms: ['Amazon','eBay','TikTok Shop'] },
-  DE: { desc: 'Amazon Germany - EUR pricing',                           platforms: ['Amazon'] },
-  NL: { desc: 'Bol.com and Amazon Netherlands - EUR pricing',           platforms: ['Bol.com','Amazon'] },
-  FR: { desc: 'Amazon France and Cdiscount - EUR pricing',              platforms: ['Amazon','Cdiscount','Fnac'] },
-  SE: { desc: 'Amazon Sweden and CDON - SEK pricing',                   platforms: ['Amazon','CDON'] },
-  NO: { desc: 'Amazon Norway and Elkjøp - NOK pricing',                 platforms: ['Amazon','Elkjøp'] },
-  AU: { desc: 'Amazon Australia and Catch.com - AUD pricing',           platforms: ['Amazon','eBay','Catch.com'] },
-  BE: { desc: 'Bol.com and Amazon Belgium - EUR pricing',               platforms: ['Bol.com','Amazon','Fnac'] },
+const MARKET_CONTEXT: Record<string, { desc: string; platforms: string[]; currency: string; priceRange: string }> = {
+  US: { desc: 'Amazon.com USA',           platforms: ['Amazon','eBay'],                  currency: 'USD', priceRange: '$15-$150' },
+  PH: { desc: 'Shopee & Lazada PH',       platforms: ['Shopee','Lazada','TikTok Shop'],  currency: 'PHP', priceRange: '₱300-₱5000' },
+  UK: { desc: 'Amazon UK',                platforms: ['Amazon','eBay','TikTok Shop'],    currency: 'GBP', priceRange: '£10-£120' },
+  DE: { desc: 'Amazon Germany',           platforms: ['Amazon','Otto'],                  currency: 'EUR', priceRange: '€12-€130' },
+  NL: { desc: 'Bol.com & Amazon NL',      platforms: ['Bol.com','Amazon'],               currency: 'EUR', priceRange: '€12-€130' },
+  FR: { desc: 'Amazon FR & Cdiscount',    platforms: ['Amazon','Cdiscount','Fnac'],      currency: 'EUR', priceRange: '€12-€130' },
+  SE: { desc: 'Amazon SE & CDON',         platforms: ['Amazon','CDON'],                  currency: 'SEK', priceRange: 'kr150-kr1500' },
+  NO: { desc: 'Amazon NO & Elkjøp',       platforms: ['Amazon','Elkjøp'],                currency: 'NOK', priceRange: 'kr150-kr1500' },
+  AU: { desc: 'Amazon AU & Catch.com',    platforms: ['Amazon','eBay','Catch.com'],      currency: 'AUD', priceRange: 'A$20-A$160' },
+  BE: { desc: 'Bol.com & Amazon BE',      platforms: ['Bol.com','Amazon','Fnac'],        currency: 'EUR', priceRange: '€12-€130' },
 }
 
 export async function GET(req: NextRequest) {
@@ -28,12 +28,48 @@ export async function GET(req: NextRequest) {
   try {
     const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
       const result = await askOpenAIJSON<{ products: any[] }>(`
-You are a market research AI. Generate realistic bestseller data for: ${ctx.desc}
-Category: "${category}". Available platforms: ${ctx.platforms.join(', ')}
-Return JSON: { "products": [ { "rank": 1, "title": "string", "category": "${category}", "price": "string", "rating": 4.5, "reviews": 12500, "asin": "string", "trend": "up"|"down"|"stable", "market": "${market}", "platform": "one of: ${ctx.platforms.join(', ')}", "keywordTags": ["kw1","kw2"], "estimatedMonthlyRevenue": "string" } ] }
-Generate 12 realistic products. Distribute across platforms naturally.`)
+You are a senior e-commerce market analyst. Generate comprehensive bestseller data for ${ctx.desc} in the "${category}" category.
+
+Return JSON: { "products": [ {
+  "rank": 1,
+  "title": "Full realistic product name with brand",
+  "brand": "Brand name",
+  "category": "${category}",
+  "subcategory": "specific subcategory",
+  "price": "price with ${ctx.currency} symbol",
+  "originalPrice": "original price if discounted",
+  "rating": 4.5,
+  "reviews": 12500,
+  "asin": "B0XXXXXXXXX",
+  "trend": "up"|"down"|"stable",
+  "trendPercent": "+12% this month",
+  "market": "${market}",
+  "platform": "one of: ${ctx.platforms.join(', ')}",
+  "fulfillment": "FBA"|"FBM"|"Seller",
+  "estimatedMonthlySales": 1200,
+  "estimatedMonthlyRevenue": "revenue with currency",
+  "estimatedProfit": "profit with currency",
+  "profitMargin": "XX%",
+  "bsr": 1500,
+  "bsrCategory": "category BSR",
+  "keywordTags": ["keyword1","keyword2","keyword3","keyword4","keyword5"],
+  "listingAge": "X months",
+  "variations": 3,
+  "isPrime": true,
+  "hasVideo": true,
+  "imageCount": 7,
+  "sellerType": "Brand"|"Reseller"|"Chinese Seller",
+  "competition": "Low"|"Medium"|"High",
+  "opportunity": "Brief opportunity description",
+  "sourcingEstimate": "estimated COGS from China"
+} ] }
+
+Generate 25 realistic products for ${market} market in price range ${ctx.priceRange}.
+Include mix of: established brands, emerging brands, generic sellers.
+Vary BSR from top 100 to top 5000. Include all platforms naturally.
+Make data specific and realistic for ${ctx.desc} market.`)
       return result.products
-    })
+    }, 15)
 
     return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {

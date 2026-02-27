@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStaleCache, setCache } from '@/lib/supabase'
-import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
+import { askOpenAIJSON } from '@/lib/openai'
+import { withCache } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
-export const revalidate = 86400
+export const maxDuration = 60
 
 const MARKET_CONTEXT: Record<string, string> = {
-  US: 'US consumers searching on Amazon and Google',
-  PH: 'Filipino shoppers on Shopee, Lazada, and TikTok Shop Philippines',
+  US: 'US consumers on Amazon and Google',
+  PH: 'Filipino shoppers on Shopee, Lazada, TikTok Shop Philippines',
   UK: 'UK consumers on Amazon UK and Google UK',
-  DE: 'German consumers on Amazon.de and Google Germany - include German language terms',
-  NL: 'Dutch consumers on Bol.com, Amazon NL - include Dutch language terms',
-  SE: 'Swedish consumers on Amazon SE, CDON, and Google Sweden - include Swedish terms',
-  NO: 'Norwegian consumers searching locally - include Norwegian terms',
+  DE: 'German consumers on Amazon.de - include German language terms',
+  NL: 'Dutch consumers on Bol.com, Amazon NL - include Dutch terms',
+  FR: 'French consumers on Amazon.fr, Cdiscount - include French terms',
+  SE: 'Swedish consumers on Amazon SE, CDON - include Swedish terms',
+  NO: 'Norwegian consumers - include Norwegian terms',
+  AU: 'Australian consumers on Amazon AU, Catch.com',
+  BE: 'Belgian consumers on Bol.com, Amazon BE - include French/Dutch terms',
 }
 
 export async function GET(req: NextRequest) {
@@ -20,38 +23,51 @@ export async function GET(req: NextRequest) {
   const category = searchParams.get('category') || 'electronics'
   const market = searchParams.get('market') || 'US'
   const context = MARKET_CONTEXT[market] || MARKET_CONTEXT.US
+  const cacheKey = `keywords:${market}:${category}`
 
   try {
-    const data = await askGeminiJSON<{ keywords: any[] }>(`
-You are a keyword research AI. Generate trending keyword data for "${category}" products targeting: ${context}
+    const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
+      const result = await askOpenAIJSON<{ keywords: any[] }>(`
+You are a senior keyword research analyst for e-commerce sellers.
+Generate comprehensive keyword data for "${category}" products targeting: ${context}
 
 Return JSON: { "keywords": [ {
   "keyword": "search term",
+  "localKeyword": "local language version if non-English market",
   "searchVolume": "XX,XXX/mo",
-  "trend": [65,70,72,80,85,90,88,92],
-  "competition": "Medium",
+  "searchVolumeRaw": 45000,
+  "trend": [65,70,72,80,85,90,88,92,89,85,82,78],
+  "trendDirection": "up"|"down"|"stable",
+  "trendPercent": "+XX% YoY",
+  "competition": "Low"|"Medium"|"High",
+  "competitionScore": 45,
   "cpc": "currency + amount",
-  "marketScore": 85,
-  "usScore": 70,
-  "phScore": 60,
-  "ukScore": 75,
-  "deScore": 65,
-  "nlScore": 55,
-  "seScore": 50,
-  "noScore": 45,
-  "category": "${category}",
-  "relatedTerms": ["term1","term2","term3"]
+  "cpcRaw": 1.45,
+  "difficulty": 55,
+  "opportunity": 75,
+  "intent": "informational"|"commercial"|"transactional"|"navigational",
+  "avgPosition": "top product rank",
+  "topASIN": "B0XXXXXXXXX",
+  "relatedKeywords": ["related1","related2","related3"],
+  "longTailVariants": ["long tail 1","long tail 2","long tail 3"],
+  "seasonalPeak": "month or season",
+  "marketScore": 78,
+  "ppcRecommended": true,
+  "organicDifficulty": "Easy"|"Medium"|"Hard",
+  "estimatedClicks": "X,XXX/mo",
+  "conversionRate": "X.X%"
 } ] }
 
-- All score fields: 0-100 interest score per market
-- For ${market}: make marketScore high (60-99)
-- Include local language search terms for non-English markets
-- CPC should use local currency
-- Generate 20 keywords. Mix high-volume and long-tail.`)
+Generate 30 keywords. Include:
+- 8 high-volume head terms
+- 12 mid-tail keywords  
+- 10 long-tail low-competition gems
+trend array must be exactly 12 numbers (monthly data).
+Make data specific and realistic for ${market} market.`)
+      return result.keywords
+    }, 15)
 
-    const response = NextResponse.json({ success: true, data: data.keywords, category, market })
-    response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
-    return response
+    return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }

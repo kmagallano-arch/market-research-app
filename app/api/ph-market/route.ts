@@ -1,39 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStaleCache, setCache } from '@/lib/supabase'
-import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
+import { askOpenAIJSON } from '@/lib/openai'
+import { withCache } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
-export const revalidate = 86400
-
-export interface PHMarketData {
-  platform: 'Lazada' | 'Shopee'
-  topCategories: { name: string; growth: string; avgPrice: string }[]
-  trendingProducts: {
-    title: string
-    platform: 'Lazada' | 'Shopee'
-    price: string
-    soldLastMonth: string
-    rating: number
-    trend: 'up' | 'stable' | 'down'
-    keywords: string[]
-  }[]
-  marketInsights: string[]
-  seasonalTips: string[]
-}
+export const maxDuration = 60
 
 export async function GET(req: NextRequest) {
-  try {
-    const data = await askGeminiJSON<PHMarketData>(`
-You are a Philippines e-commerce market research expert. Generate realistic market data for Lazada and Shopee Philippines.
-Return JSON: { "platform": "Lazada", "topCategories": [{"name": "...", "growth": "+XX%", "avgPrice": "₱XXX"}], "trendingProducts": [{"title": "...", "platform": "Lazada", "price": "₱XXX", "soldLastMonth": "X,XXX", "rating": 4.5, "trend": "up", "keywords": ["kw1","kw2","kw3"]}], "marketInsights": ["insight1","insight2","insight3","insight4","insight5"], "seasonalTips": ["tip1","tip2","tip3"] }
-- Generate 6 top categories with growth rates
-- Generate 16 trending products mix of Lazada and Shopee
-- Focus on electronics, home appliances, cleaning products, auto accessories, smart home
-- Philippines buyers: price-sensitive, popular price points ₱500-₱3000`)
+  const { searchParams } = new URL(req.url)
+  const category = searchParams.get('category') || 'electronics'
+  const cacheKey = `ph-market:${category}`
 
-    const response = NextResponse.json({ success: true, data })
-    response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
-    return response
+  try {
+    const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
+      const result = await askOpenAIJSON<any>(`
+You are a Philippines e-commerce market research expert.
+Market context: Philippines e-commerce. Price-sensitive buyers. Popular price ₱300-₱5000. Mobile-first shoppers.
+Category: "${category}"
+Platforms: Shopee, Lazada, TikTok Shop
+
+Return JSON: {
+  "topCategories": [{
+    "name": "string", "growth": "+XX%", "avgPrice": "₱XXX",
+    "topProduct": "string", "competition": "Low"|"Medium"|"High",
+    "opportunity": "string"
+  }],
+  "trendingProducts": [{
+    "title": "Full product name with brand",
+    "brand": "Brand name",
+    "platform": "one of: Shopee, Lazada, TikTok Shop",
+    "price": "₱XXX",
+    "originalPrice": "₱XXX",
+    "soldLastMonth": "X,XXX",
+    "estimatedRevenue": "₱XX,XXX/mo",
+    "profitMargin": "XX%",
+    "rating": 4.5,
+    "reviews": 1500,
+    "trend": "up"|"stable"|"down",
+    "trendPercent": "+XX%",
+    "category": "string",
+    "subcategory": "string",
+    "keywords": ["kw1","kw2","kw3","kw4","kw5"],
+    "competition": "Low"|"Medium"|"High",
+    "opportunity": "Brief opportunity note",
+    "sourcingCost": "estimated China cost",
+    "targetAudience": "buyer description",
+    "isSponsored": false,
+    "fulfillment": "Platform"|"Seller"
+  }],
+  "marketInsights": ["insight1","insight2","insight3","insight4","insight5","insight6","insight7","insight8"],
+  "seasonalTips": ["tip1","tip2","tip3","tip4","tip5"],
+  "topKeywords": ["kw1","kw2","kw3","kw4","kw5","kw6","kw7","kw8","kw9","kw10"],
+  "marketStats": {
+    "totalMarketSize": "string",
+    "yoyGrowth": "+XX%",
+    "avgOrderValue": "₱XXX",
+    "mobileShare": "XX%",
+    "topPaymentMethod": "string",
+    "returnRate": "XX%"
+  }
+}
+
+Generate 8 top categories, 30 trending products in price range ₱300-₱8,000.
+Mix platforms naturally. Be specific with Philippines market context. Include local brands.`)
+      return result
+    }, 15)
+
+    return NextResponse.json({ success: true, data, _cached: cached, _age: ageMinutes })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }
