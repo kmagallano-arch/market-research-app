@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getStaleCache, setCache } from '@/lib/supabase'
 import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
 
 export const runtime = 'nodejs'

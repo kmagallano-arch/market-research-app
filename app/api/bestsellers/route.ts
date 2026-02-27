@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
+import { askOpenAIJSON } from '@/lib/openai'
+import { withCache } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
-export const revalidate = 86400
+export const maxDuration = 30
 
 const MARKET_CONTEXT: Record<string, { desc: string; platforms: string[] }> = {
   US: { desc: 'Amazon.com USA - USD pricing',                           platforms: ['Amazon','eBay'] },
@@ -22,35 +23,19 @@ export async function GET(req: NextRequest) {
   const category = searchParams.get('category') || 'electronics'
   const market = searchParams.get('market') || 'US'
   const ctx = MARKET_CONTEXT[market] || MARKET_CONTEXT.US
+  const cacheKey = `bestsellers:${market}:${category}`
 
   try {
-    const data = await askGeminiJSON<{ products: any[] }>(`
+    const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
+      const result = await askOpenAIJSON<{ products: any[] }>(`
 You are a market research AI. Generate realistic bestseller data for: ${ctx.desc}
-Category: "${category}"
-Available platforms for this market: ${ctx.platforms.join(', ')}
+Category: "${category}". Available platforms: ${ctx.platforms.join(', ')}
+Return JSON: { "products": [ { "rank": 1, "title": "string", "category": "${category}", "price": "string", "rating": 4.5, "reviews": 12500, "asin": "string", "trend": "up"|"down"|"stable", "market": "${market}", "platform": "one of: ${ctx.platforms.join(', ')}", "keywordTags": ["kw1","kw2"], "estimatedMonthlyRevenue": "string" } ] }
+Generate 12 realistic products. Distribute across platforms naturally.`)
+      return result.products
+    })
 
-Return JSON: { "products": [ {
-  "rank": 1,
-  "title": "Product name",
-  "category": "${category}",
-  "price": "XX.XX with correct currency symbol",
-  "rating": 4.5,
-  "reviews": 12500,
-  "asin": "B0XXXXXXXXX",
-  "trend": "up",
-  "market": "${market}",
-  "platform": "one of: ${ctx.platforms.join(', ')}",
-  "keywordTags": ["keyword1","keyword2","keyword3"],
-  "estimatedMonthlyRevenue": "XX,XXX with currency"
-} ] }
-
-Generate 12 products. Distribute across available platforms naturally.
-- trend: "up", "down", or "stable"
-- platform: must be exactly one of the available platforms listed above`)
-
-    const response = NextResponse.json({ success: true, data: data.products, category, market })
-    response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
-    return response
+    return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }

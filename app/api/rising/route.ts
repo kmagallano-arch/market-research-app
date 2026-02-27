@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { askOpenAIJSON as askGeminiJSON } from '@/lib/openai'
+import { askOpenAIJSON } from '@/lib/openai'
+import { withCache } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
-export const revalidate = 86400
+export const maxDuration = 30
 
 const MARKET_CONTEXT: Record<string, string> = {
-  US: 'US Amazon market',
-  PH: 'Philippines Shopee/Lazada/TikTok Shop',
-  UK: 'UK Amazon and British retail market',
-  DE: 'German Amazon.de and German retail market',
-  NL: 'Dutch Bol.com and Amazon Netherlands',
-  FR: 'French Amazon.fr and Cdiscount market',
-  SE: 'Swedish Amazon SE, CDON and Scandinavian market',
-  NO: 'Norwegian market and Nordic retail',
-  AU: 'Australian Amazon AU and Catch.com market',
-  BE: 'Belgian Bol.com and Amazon Belgium market',
+  US: 'US Amazon market', PH: 'Philippines Shopee/Lazada/TikTok Shop',
+  UK: 'UK Amazon and British retail', DE: 'German Amazon.de market',
+  NL: 'Dutch Bol.com and Amazon NL', FR: 'French Amazon.fr and Cdiscount',
+  SE: 'Swedish Amazon SE and CDON', NO: 'Norwegian market',
+  AU: 'Australian Amazon AU and Catch.com', BE: 'Belgian Bol.com and Amazon BE',
 }
-
 const MARKET_PLATFORMS: Record<string, string[]> = {
   US: ['Amazon','eBay'], PH: ['Shopee','Lazada','TikTok Shop'],
   UK: ['Amazon','eBay','TikTok Shop'], DE: ['Amazon'],
@@ -28,46 +23,20 @@ const MARKET_PLATFORMS: Record<string, string[]> = {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const market = searchParams.get('market') || 'US'
-  const context = MARKET_CONTEXT[market] || MARKET_CONTEXT.US
+  const cacheKey = `rising:${market}`
 
   try {
-    const data = await askGeminiJSON<{ products: any[] }>(`
-You are a product trend analyst. Identify NEW up-and-coming products for: ${context}
-- Recently launched (0-18 months)
-- Strong search growth and conversion signals
-- Low competition, good for a Shopify seller sourcing from China
-- Focus on: electronics, home appliances, cleaning, auto, smart home, beauty & skincare, health & wellness, fitness, pet supplies, baby & kids, outdoor & camping
+    const { data, cached, ageMinutes } = await withCache(cacheKey, async () => {
+      const context = MARKET_CONTEXT[market] || MARKET_CONTEXT.US
+      const platforms = MARKET_PLATFORMS[market] || ['Amazon']
+      const result = await askOpenAIJSON<{ products: any[] }>(`
+Rising products analyst for: ${context}. Focus on: electronics, home, cleaning, auto, smart home, beauty, health, fitness, pet, baby, outdoor.
+Return JSON: { "products": [ { "name": "string", "category": "string", "targetMarket": "${market}", "launchAge": "string", "searchGrowth": "string", "conversionRate": "string", "avgPrice": "string", "monthlySales": "string", "momentum": 87, "whyNow": "string", "earlySignals": ["s1","s2"], "sourcingDifficulty": "Easy"|"Medium"|"Hard", "competitionLevel": "None"|"Low"|"Medium", "topKeywords": ["kw1","kw2"], "platform": "one of: ${platforms.join(', ')}", "trend": "exploding"|"rising"|"emerging" } ] }
+Generate 12 products.`)
+      return result.products
+    })
 
-Return JSON: { "products": [ {
-  "name": "Product name",
-  "category": "Category",
-  "targetMarket": "${market}",
-  "launchAge": "6 months",
-  "searchGrowth": "+340% in 90 days",
-  "conversionRate": "4.2%",
-  "avgPrice": "price with correct currency for ${market}",
-  "monthlySales": "~2,400 units",
-  "momentum": 87,
-  "whyNow": "Why gaining traction now in 1-2 sentences",
-  "earlySignals": ["signal1", "signal2", "signal3"],
-  "sourcingDifficulty": "Easy",
-  "competitionLevel": "Low",
-  "topKeywords": ["kw1","kw2","kw3"],
-  "platform": "platform name",
-  "trend": "exploding"
-} ] }
-
-- platform: must be one of the available platforms for ${market}: ${(MARKET_PLATFORMS[market]||['Amazon']).join(', ')}
-
-- momentum: 0-100
-- trend: "exploding", "rising", or "emerging"
-- sourcingDifficulty: "Easy", "Medium", "Hard"
-- competitionLevel: "None", "Low", "Medium"
-- Generate 12 products. Include local market context for ${market}.`)
-
-    const response = NextResponse.json({ success: true, data: data.products, market })
-    response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400')
-    return response
+    return NextResponse.json({ success: true, data, market, _cached: cached, _age: ageMinutes })
   } catch (err) {
     return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }
