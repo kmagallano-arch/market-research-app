@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { getStaleCache, setCache } from '@/lib/supabase'
 import { askOpenAIJSON } from '@/lib/openai'
+import { jsonResponse } from '@/lib/api-headers'
 
 export const revalidate = 86400
 
@@ -10,8 +11,8 @@ export async function GET(req: NextRequest) {
   try {
     const data = await askOpenAIJSON(`You are a Keepa-style price tracker for ${category} in ${market}. Generate realistic price history.
 Return JSON: { "data": [ { "productName": string, "category": string, "currentPrice": number, "currency": string, "allTimeLow": number, "allTimeHigh": number, "avgPrice90d": number, "priceChange30d": string, "trend": "dropping"|"stable"|"rising"|"volatile", "buySignal": "strong-buy"|"buy"|"wait"|"overpriced", "priceHistory": number[], "seasonalPattern": string, "nextDipEstimate": string, "competitorCount": number, "stockSignal": string } ] } — 10 products, priceHistory must be exactly 24 numbers. Only JSON.`)
-    return NextResponse.json(data)
+    return jsonResponse(data, { short: true })
   } catch (e) {
-    return NextResponse.json({ error: 'Failed', data: [] }, { status: 500 })
+    return jsonResponse({ error: 'Failed', data: [] }, { status: 500, noCache: true })
   }
 }

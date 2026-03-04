@@ -1,5 +1,5 @@
 export const MARKETS = {
-  US: { label: 'United States',  flag: '🇺🇸', currency: 'USD', symbol: '$',  platform: 'Amazon US',           color: '#2E6FFF' },
+  US: { label: 'United States',  flag: '🇺🇸', currency: 'USD', symbol: '$',  platform: 'Amazon US',           color: '#0EA5E9' },
   UK: { label: 'United Kingdom', flag: '🇬🇧', currency: 'GBP', symbol: '£',  platform: 'Amazon UK',           color: '#8B5CF6' },
   DE: { label: 'Germany',        flag: '🇩🇪', currency: 'EUR', symbol: '€',  platform: 'Amazon DE · Otto',    color: '#FFB830' },
   FR: { label: 'France',         flag: '🇫🇷', currency: 'EUR', symbol: '€',  platform: 'Amazon FR · Cdiscount',color: '#E30613' },

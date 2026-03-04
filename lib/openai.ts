@@ -4,6 +4,7 @@ export async function askOpenAIJSON<T>(prompt: string): Promise<T> {
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,

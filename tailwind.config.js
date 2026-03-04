@@ -10,7 +10,7 @@ module.exports = {
       colors: {
         navy: '#0B1426', navy2: '#111E35', navy3: '#162040',
         card: '#152035', border: '#1E2E4A',
-        accent: '#2E6FFF', us: '#2E6FFF', ph: '#FF4D6A',
+        accent: '#0EA5E9', us: '#0EA5E9', ph: '#FF4D6A',
         success: '#00C48C', amber: '#FFB830', purple: '#8B5CF6',
       },
     },

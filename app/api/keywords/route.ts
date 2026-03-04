@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { askOpenAIJSON } from '@/lib/openai'
 import { withCache } from '@/lib/supabase'
+import { jsonResponse } from '@/lib/api-headers'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -67,8 +68,8 @@ Make data specific and realistic for ${market} market.`)
       return result.keywords
     }, 30)
 
-    return NextResponse.json({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
+    return jsonResponse({ success: true, data, category, market, _cached: cached, _age: ageMinutes })
   } catch (err) {
-    return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
+    return jsonResponse({ success: false, error: String(err) }, { status: 500, noCache: true })
   }
 }

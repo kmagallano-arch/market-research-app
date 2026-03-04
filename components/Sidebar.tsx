@@ -57,7 +57,7 @@ export default function Sidebar() {
   return (
     <aside style={{
       width: 234,
-      background: 'linear-gradient(170deg, #0a0f2e 0%, #1e3a8a 50%, #0f1f5e 100%)',
+      background: 'linear-gradient(170deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
@@ -69,8 +69,8 @@ export default function Sidebar() {
       borderRight: '1px solid rgba(255,255,255,0.08)',
     }}>
       {/* Orbs */}
-      <div style={{ position: 'absolute', top: -60, right: -60, width: 180, height: 180, borderRadius: '50%', background: 'rgba(59,130,246,0.15)', filter: 'blur(50px)', pointerEvents: 'none' }}/>
-      <div style={{ position: 'absolute', bottom: 60, left: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(30,58,138,0.2)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
+      <div style={{ position: 'absolute', top: -60, right: -60, width: 180, height: 180, borderRadius: '50%', background: 'rgba(14,165,233,0.15)', filter: 'blur(50px)', pointerEvents: 'none' }}/>
+      <div style={{ position: 'absolute', bottom: 60, left: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(30,41,59,0.3)', filter: 'blur(40px)', pointerEvents: 'none' }}/>
 
       {/* Logo */}
       <div style={{ padding: '22px 18px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0, position: 'relative' }}>
@@ -100,7 +100,7 @@ export default function Sidebar() {
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px', fontFamily: 'Geist, sans-serif' }}>Brainy Duck</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,240,180,0.4)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
+          <div style={{ fontSize: 12, color: 'rgba(148,163,184,0.7)', fontFamily: 'Geist, sans-serif', marginTop: 2 }}>Market Intelligence</div>
         </div>
         {logoUrl && (
           <button onClick={() => setLogoUrl(null)} style={{ display: 'block', margin: '6px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.2)', fontSize: 11, fontFamily: 'Geist, sans-serif' }}>reset</button>
@@ -114,7 +114,7 @@ export default function Sidebar() {
             return (
               <div key={idx} style={{
                 fontSize: 11, fontWeight: 600,
-                color: 'rgba(255,240,180,0.3)',
+                color: 'rgba(148,163,184,0.4)',
                 letterSpacing: '0.8px', textTransform: 'uppercase',
                 padding: '14px 8px 4px',
                 fontFamily: 'Geist, sans-serif',
@@ -143,9 +143,9 @@ export default function Sidebar() {
                 fontWeight: active ? 600 : 400,
                 fontFamily: 'Geist, sans-serif',
                 transition: 'all 0.12s ease',
-                color: active || isHov ? '#ffffff' : 'rgba(255,240,180,0.65)',
-                background: active ? 'rgba(255,255,255,0.12)' : isHov ? 'rgba(255,255,255,0.06)' : 'transparent',
-                borderLeft: active ? '2px solid rgba(255,255,255,0.7)' : isHov ? '2px solid rgba(255,255,255,0.2)' : '2px solid transparent',
+                color: active || isHov ? '#ffffff' : 'rgba(148,163,184,0.7)',
+                background: active ? 'rgba(14,165,233,0.15)' : isHov ? 'rgba(255,255,255,0.06)' : 'transparent',
+                borderLeft: active ? '2px solid #38BDF8' : isHov ? '2px solid rgba(255,255,255,0.2)' : '2px solid transparent',
                 borderBottom: '1px solid rgba(255,255,255,0.04)',
                 borderTop: 'none', borderRight: 'none',
               }}
@@ -157,7 +157,7 @@ export default function Sidebar() {
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.badge && (
-                <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(255,255,255,0.1)', color: 'rgba(255,240,180,0.45)', borderRadius: 4, fontWeight: 700, letterSpacing: '0.3px', fontFamily: 'Geist, sans-serif' }}>
+                <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(14,165,233,0.15)', color: 'rgba(56,189,248,0.7)', borderRadius: 4, fontWeight: 700, letterSpacing: '0.3px', fontFamily: 'Geist, sans-serif' }}>
                   {item.badge}
                 </span>
               )}
@@ -170,9 +170,9 @@ export default function Sidebar() {
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#12B76A', boxShadow: '0 0 5px #12B76A' }} />
-          <span style={{ fontSize: 12.5, color: 'rgba(255,240,180,0.35)', fontFamily: 'Geist, sans-serif' }}>Live · Claude Sonnet</span>
+          <span style={{ fontSize: 12.5, color: 'rgba(148,163,184,0.5)', fontFamily: 'Geist, sans-serif' }}>Live · Claude Sonnet</span>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,240,180,0.2)', fontFamily: 'Geist, sans-serif' }}>14 tools</div>
+        <div style={{ fontSize: 11, color: 'rgba(148,163,184,0.3)', fontFamily: 'Geist, sans-serif' }}>14 tools</div>
       </div>
     </aside>
   )

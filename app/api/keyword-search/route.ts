@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { askOpenAIJSON } from '@/lib/openai'
 import { getStaleCache, setCache } from '@/lib/supabase'
+import { jsonResponse } from '@/lib/api-headers'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
@@ -22,13 +23,13 @@ export async function GET(req: NextRequest) {
     // 1. Try Supabase first - return instantly if cached
     const cached = await getStaleCache(cacheKey)
     if (cached) {
-      return NextResponse.json({
+      return jsonResponse({
         success: true,
         hasLiveData: false,
         _cached: true,
         _age: Math.round(cached.ageMinutes),
         ...cached.data
-      })
+      }, { short: true })
     }
 
     // 2. Not in cache yet - fetch from Claude and save
@@ -38,8 +39,8 @@ Generate 15 related keywords.`)
 
     await setCache(cacheKey, data).catch(() => {})
 
-    return NextResponse.json({ success: true, hasLiveData: false, _cached: false, ...data })
+    return jsonResponse({ success: true, hasLiveData: false, _cached: false, ...data }, { short: true })
   } catch (err) {
-    return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
+    return jsonResponse({ success: false, error: String(err) }, { status: 500, noCache: true })
   }
 }

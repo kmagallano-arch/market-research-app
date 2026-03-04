@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { askOpenAIJSON } from '@/lib/openai'
 import { setCache } from '@/lib/supabase'
+import { jsonResponse } from '@/lib/api-headers'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -38,7 +39,7 @@ Generate 15 related keywords.`)
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return jsonResponse({ error: 'Unauthorized' }, { status: 401, noCache: true })
   }
 
   // Rotate through keywords - 1 keyword × all 10 markets per run
@@ -51,11 +52,11 @@ export async function GET(req: NextRequest) {
 
   const results = batch.map(r => r.status === 'fulfilled' ? r.value : r.reason)
 
-  return NextResponse.json({
+  return jsonResponse({
     success: true,
     keyword,
     results,
     nextKeyword: KEYWORDS[(minuteIndex + 1) % KEYWORDS.length],
     timestamp: new Date().toISOString(),
-  })
+  }, { noCache: true })
 }

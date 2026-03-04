@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import Sidebar from '@/components/Sidebar'
-import PlatformFilter, { PlatformKey } from '@/components/PlatformFilter'
 
 const SIGNALS = [
   { kw:'dashcam 4K',                us:88, ph:72, vol:'49K/mo',  change:'+12%', cat:'Auto'       },
@@ -20,26 +19,21 @@ const SIGNALS = [
 
 export default function TrendsPage() {
   const [sort, setSort] = useState<'us'|'ph'|'change'>('us')
-  const [platform, setPlatform] = useState<PlatformKey>('all')
   const sorted = [...SIGNALS].sort((a,b)=>sort==='us'?b.us-a.us:sort==='ph'?b.ph-a.ph:parseFloat(b.change)-parseFloat(a.change))
 
   return (
-    <div style={{ display:'flex', minHeight:'100vh', background:'#F2F3F7' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'#F1F5F9' }}>
       <Sidebar />
       <main style={{ flex:1, padding:'28px 32px', overflow:'auto' }}>
         <div style={{ marginBottom:24 }}>
-          <h1 style={{ fontSize:22, fontWeight:700, color:'#1A1D2E', letterSpacing:'-0.4px' }}>📡 Market Trends</h1>
-          <p style={{ fontSize:13, color:'#6B7280', marginTop:3 }}>Keyword momentum — US vs Philippines ranked by search interest</p>
-        </div>
-
-        <div style={{ marginBottom:16 }}>
-          <PlatformFilter value={platform} onChange={setPlatform} />
+          <h1 style={{ fontSize:22, fontWeight:700, color:'#0F172A', letterSpacing:'-0.4px' }}>📡 Market Trends</h1>
+          <p style={{ fontSize:13, color:'#64748B', marginTop:3 }}>Keyword momentum — US vs Philippines ranked by search interest</p>
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
           {[
             {label:'Rising Fast',  value:SIGNALS.filter(s=>parseInt(s.change)>20).length, color:'#00C48C', sub:'>20% growth'},
-            {label:'US Dominant',  value:SIGNALS.filter(s=>s.us>s.ph+10).length,          color:'#2E6FFF', sub:'US score >PH+10'},
+            {label:'US Dominant',  value:SIGNALS.filter(s=>s.us>s.ph+10).length,          color:'#0EA5E9', sub:'US score >PH+10'},
             {label:'PH Dominant',  value:SIGNALS.filter(s=>s.ph>s.us).length,             color:'#FF4D6A', sub:'PH beating US'},
             {label:'Both Markets', value:SIGNALS.filter(s=>s.us>70&&s.ph>70).length,      color:'#FFB830', sub:'Both score >70'},
           ].map((c,i)=>(
@@ -47,17 +41,17 @@ export default function TrendsPage() {
               <div style={{ width:36, height:36, borderRadius:10, background:`${c.color}15`, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:12 }}>
                 <div style={{ width:14, height:14, borderRadius:'50%', background:c.color }}/>
               </div>
-              <div style={{ fontSize:26, fontWeight:800, color:'#1A1D2E', fontFamily:'DM Mono' }}>{c.value}</div>
+              <div style={{ fontSize:26, fontWeight:800, color:'#0F172A', fontFamily:'DM Mono' }}>{c.value}</div>
               <div style={{ fontSize:12, fontWeight:600, color:c.color, marginTop:2 }}>{c.label}</div>
-              <div style={{ fontSize:11, color:'#9CA3AF', marginTop:2 }}>{c.sub}</div>
+              <div style={{ fontSize:11, color:'#94A3B8', marginTop:2 }}>{c.sub}</div>
             </div>
           ))}
         </div>
 
         <div style={{ display:'flex', gap:6, marginBottom:14, alignItems:'center' }}>
-          <span style={{ fontSize:12, color:'#9CA3AF', marginRight:4 }}>Sort by:</span>
+          <span style={{ fontSize:12, color:'#94A3B8', marginRight:4 }}>Sort by:</span>
           {([['us','🇺🇸 US Score'],['ph','🇵🇭 PH Score'],['change','📈 Growth']] as const).map(([val,label])=>(
-            <button key={val} onClick={()=>setSort(val)} style={{ padding:'6px 14px', borderRadius:20, border:`1.5px solid ${sort===val?'#2E6FFF':'#E8E9EF'}`, background:sort===val?'rgba(46,111,255,0.08)':'white', color:sort===val?'#2E6FFF':'#6B7280', fontSize:12, fontWeight:sort===val?700:400, cursor:'pointer' }}>{label}</button>
+            <button key={val} onClick={()=>setSort(val)} style={{ padding:'6px 14px', borderRadius:20, border:`1.5px solid ${sort===val?'#0EA5E9':'#E2E8F0'}`, background:sort===val?'rgba(14,165,233,0.08)':'white', color:sort===val?'#0EA5E9':'#64748B', fontSize:12, fontWeight:sort===val?700:400, cursor:'pointer' }}>{label}</button>
           ))}
         </div>
 
@@ -67,22 +61,22 @@ export default function TrendsPage() {
             <tbody>
               {sorted.map((k,i)=>{
                 const opp = k.us>75&&k.ph>75?'Both':k.us>k.ph?'US Focus':'PH Focus'
-                const oppColor = opp==='Both'?'#00C48C':opp==='US Focus'?'#2E6FFF':'#FF4D6A'
-                const oppBg    = opp==='Both'?'rgba(0,196,140,0.1)':opp==='US Focus'?'rgba(46,111,255,0.1)':'rgba(255,77,106,0.1)'
+                const oppColor = opp==='Both'?'#00C48C':opp==='US Focus'?'#0EA5E9':'#FF4D6A'
+                const oppBg    = opp==='Both'?'rgba(0,196,140,0.1)':opp==='US Focus'?'rgba(14,165,233,0.1)':'rgba(255,77,106,0.1)'
                 return (
                   <tr key={i}>
-                    <td style={{ fontWeight:500, color:'#1A1D2E' }}>{k.kw}</td>
-                    <td><span style={{ fontSize:11, padding:'2px 9px', background:'#F3F4F6', color:'#6B7280', borderRadius:20 }}>{k.cat}</span></td>
-                    <td style={{ fontFamily:'DM Mono', fontSize:12, color:'#9CA3AF' }}>{k.vol}</td>
+                    <td style={{ fontWeight:500, color:'#0F172A' }}>{k.kw}</td>
+                    <td><span style={{ fontSize:11, padding:'2px 9px', background:'#F1F5F9', color:'#64748B', borderRadius:20 }}>{k.cat}</span></td>
+                    <td style={{ fontFamily:'DM Mono', fontSize:12, color:'#94A3B8' }}>{k.vol}</td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                        <div style={{ width:80, height:5, background:'#F0F1F5', borderRadius:3 }}><div style={{ width:`${k.us}%`, height:'100%', background:'#2E6FFF', borderRadius:3 }}/></div>
-                        <span style={{ fontSize:12, fontWeight:700, color:'#2E6FFF', fontFamily:'DM Mono' }}>{k.us}</span>
+                        <div style={{ width:80, height:5, background:'#E2E8F0', borderRadius:3 }}><div style={{ width:`${k.us}%`, height:'100%', background:'#0EA5E9', borderRadius:3 }}/></div>
+                        <span style={{ fontSize:12, fontWeight:700, color:'#0EA5E9', fontFamily:'DM Mono' }}>{k.us}</span>
                       </div>
                     </td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                        <div style={{ width:80, height:5, background:'#F0F1F5', borderRadius:3 }}><div style={{ width:`${k.ph}%`, height:'100%', background:'#FF4D6A', borderRadius:3 }}/></div>
+                        <div style={{ width:80, height:5, background:'#E2E8F0', borderRadius:3 }}><div style={{ width:`${k.ph}%`, height:'100%', background:'#FF4D6A', borderRadius:3 }}/></div>
                         <span style={{ fontSize:12, fontWeight:700, color:'#FF4D6A', fontFamily:'DM Mono' }}>{k.ph}</span>
                       </div>
                     </td>

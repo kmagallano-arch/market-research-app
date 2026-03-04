@@ -32,20 +32,20 @@ export default function CompetitorPage() {
     }
   }
 
-  const diffColor = (d: string) => ({ Easy: '#00C48C', Medium: '#FFB830', Hard: '#FF4D6A' }[d] || '#9CA3AF')
-  const diffBg   = (d: string) => ({ Easy: 'rgba(0,196,140,0.1)', Medium: 'rgba(255,184,48,0.1)', Hard: 'rgba(255,77,106,0.1)' }[d] || '#F3F4F6')
+  const diffColor = (d: string) => ({ Easy: '#00C48C', Medium: '#FFB830', Hard: '#FF4D6A' }[d] || '#94A3B8')
+  const diffBg   = (d: string) => ({ Easy: 'rgba(0,196,140,0.1)', Medium: 'rgba(255,184,48,0.1)', Hard: 'rgba(255,77,106,0.1)' }[d] || '#F1F5F9')
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#F2F3F7' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F1F5F9' }}>
       <Sidebar />
       <main style={{ flex: 1, padding: '28px 32px', overflow: 'auto' }}>
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1A1D2E', letterSpacing: '-0.4px' }}>🏆 Competitor Analyzer</h1>
-          <p style={{ fontSize: 14, color: '#6B7280', marginTop: 3 }}>Jungle Scout-style competitor intelligence — see who you're up against</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#0F172A', letterSpacing: '-0.4px' }}>🏆 Competitor Analyzer</h1>
+          <p style={{ fontSize: 14, color: '#64748B', marginTop: 3 }}>Jungle Scout-style competitor intelligence — see who you're up against</p>
         </div>
 
         <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 9 }}>Market</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 9 }}>Market</div>
           <MarketSelector value={market} onChange={setMarket} />
         </div>
 
@@ -55,12 +55,12 @@ export default function CompetitorPage() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && analyze()}
             placeholder="Enter product to analyze..."
-            style={{ flex: 1, maxWidth: 400, padding: '10px 16px', borderRadius: 10, border: '1.5px solid #E8E9EF', fontSize: 14, outline: 'none', fontFamily: 'DM Sans,sans-serif' }}
+            style={{ flex: 1, maxWidth: 400, padding: '10px 16px', borderRadius: 10, border: '1.5px solid #E2E8F0', fontSize: 14, outline: 'none', fontFamily: 'DM Sans,sans-serif' }}
           />
           <button
             onClick={() => analyze()}
             disabled={state === 'loading'}
-            style={{ padding: '10px 22px', background: state === 'loading' ? '#9CA3AF' : m.color, color: 'white', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: state === 'loading' ? 'not-allowed' : 'pointer', transition: 'background 0.2s' }}
+            style={{ padding: '10px 22px', background: state === 'loading' ? '#94A3B8' : m.color, color: 'white', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: state === 'loading' ? 'not-allowed' : 'pointer', transition: 'background 0.2s' }}
           >
             {state === 'loading' ? 'Analyzing...' : 'Analyze'}
           </button>
@@ -69,16 +69,16 @@ export default function CompetitorPage() {
         <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
           {POPULAR.map(p => (
             <button key={p} onClick={() => { setInput(p); analyze(p) }}
-              style={{ padding: '5px 13px', borderRadius: 20, border: `1.5px solid ${searched === p ? m.color : '#E8E9EF'}`, background: searched === p ? `${m.color}12` : 'white', color: searched === p ? m.color : '#6B7280', fontSize: 12, cursor: 'pointer', fontWeight: searched === p ? 700 : 400 }}>
+              style={{ padding: '5px 13px', borderRadius: 20, border: `1.5px solid ${searched === p ? m.color : '#E2E8F0'}`, background: searched === p ? `${m.color}12` : 'white', color: searched === p ? m.color : '#64748B', fontSize: 12, cursor: 'pointer', fontWeight: searched === p ? 700 : 400 }}>
               {p}
             </button>
           ))}
         </div>
 
         {state === 'loading' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '24px 20px', color: '#9CA3AF', fontSize: 14 }}>
-            <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid #E8E9EF', borderTopColor: m.color, animation: 'spin 0.8s linear infinite' }} />
-            Scanning competitors for <b style={{ color: '#1A1D2E', marginLeft: 4 }}>{searched}</b> in {m.label}...
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '24px 20px', color: '#94A3B8', fontSize: 14 }}>
+            <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid #E2E8F0', borderTopColor: m.color, animation: 'spin 0.8s linear infinite' }} />
+            Scanning competitors for <b style={{ color: '#0F172A', marginLeft: 4 }}>{searched}</b> in {m.label}...
           </div>
         )}
 
@@ -93,7 +93,7 @@ export default function CompetitorPage() {
                   { label: 'Entry Difficulty',  value: data.marketSummary.entryDifficulty,    color: diffColor(data.marketSummary.entryDifficulty) },
                 ].map((c, i) => (
                   <div key={i} className="card" style={{ padding: '16px 18px' }}>
-                    <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>{c.label}</div>
+                    <div style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>{c.label}</div>
                     <div style={{ fontSize: 22, fontWeight: 800, color: c.color, fontFamily: 'DM Mono' }}>{c.value}</div>
                   </div>
                 ))}
@@ -101,8 +101,8 @@ export default function CompetitorPage() {
             )}
 
             <div className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ padding: '16px 20px', borderBottom: '1px solid #F0F1F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1D2E' }}>Top Competitors — {data.product}</div>
+              <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#0F172A' }}>Top Competitors — {data.product}</div>
                 {data.marketSummary && (
                   <span style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, fontWeight: 700, background: diffBg(data.marketSummary.entryDifficulty), color: diffColor(data.marketSummary.entryDifficulty) }}>
                     {data.marketSummary.entryDifficulty} to Enter
@@ -115,24 +115,24 @@ export default function CompetitorPage() {
                   {(data.topCompetitors || []).map((c: any, i: number) => (
                     <tr key={i}>
                       <td style={{ maxWidth: 200 }}>
-                        <div style={{ fontWeight: 600, color: '#1A1D2E', marginBottom: 2 }}>{c.name}</div>
-                        <div style={{ fontSize: 11, color: '#9CA3AF' }}>{c.brand} · {c.fulfillment}</div>
+                        <div style={{ fontWeight: 600, color: '#0F172A', marginBottom: 2 }}>{c.name}</div>
+                        <div style={{ fontSize: 11, color: '#94A3B8' }}>{c.brand} · {c.fulfillment}</div>
                       </td>
                       <td style={{ color: '#00C48C', fontWeight: 700, fontFamily: 'DM Mono' }}>{c.price}</td>
                       <td style={{ color: '#FFB830', fontFamily: 'DM Mono' }}>{c.rating}★</td>
-                      <td style={{ color: '#6B7280', fontFamily: 'DM Mono', fontSize: 13 }}>{(c.reviews || 0).toLocaleString()}</td>
+                      <td style={{ color: '#64748B', fontFamily: 'DM Mono', fontSize: 13 }}>{(c.reviews || 0).toLocaleString()}</td>
                       <td style={{ color: m.color, fontFamily: 'DM Mono', fontSize: 13 }}>{(c.monthlySales || 0).toLocaleString()}</td>
-                      <td style={{ color: '#1A1D2E', fontFamily: 'DM Mono', fontSize: 13, fontWeight: 600 }}>{c.monthlyRevenue}</td>
-                      <td style={{ color: '#9CA3AF', fontFamily: 'DM Mono', fontSize: 12 }}>#{(c.bsr || 0).toLocaleString()}</td>
+                      <td style={{ color: '#0F172A', fontFamily: 'DM Mono', fontSize: 13, fontWeight: 600 }}>{c.monthlyRevenue}</td>
+                      <td style={{ color: '#94A3B8', fontFamily: 'DM Mono', fontSize: 12 }}>#{(c.bsr || 0).toLocaleString()}</td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <div style={{ width: 50, height: 5, background: '#F0F1F5', borderRadius: 3 }}>
+                          <div style={{ width: 50, height: 5, background: '#E2E8F0', borderRadius: 3 }}>
                             <div style={{ width: `${c.listingScore}%`, height: '100%', background: c.listingScore >= 70 ? '#00C48C' : c.listingScore >= 50 ? '#FFB830' : '#FF4D6A', borderRadius: 3 }} />
                           </div>
                           <span style={{ fontSize: 12, fontFamily: 'DM Mono', fontWeight: 700, color: c.listingScore >= 70 ? '#00C48C' : c.listingScore >= 50 ? '#FFB830' : '#FF4D6A' }}>{c.listingScore}</span>
                         </div>
                       </td>
-                      <td style={{ maxWidth: 160, fontSize: 12, color: '#6B7280' }}>{c.opportunityGap}</td>
+                      <td style={{ maxWidth: 160, fontSize: 12, color: '#64748B' }}>{c.opportunityGap}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -141,16 +141,16 @@ export default function CompetitorPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div className="card" style={{ padding: '18px 20px' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1D2E', marginBottom: 14 }}>🔑 Keyword Gaps</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', marginBottom: 14 }}>🔑 Keyword Gaps</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {(data.keywordGaps || []).map((kw: string, i: number) => (
-                    <span key={i} style={{ fontSize: 12, padding: '5px 12px', background: 'rgba(46,111,255,0.1)', color: '#2E6FFF', borderRadius: 20, fontWeight: 500 }}>{kw}</span>
+                    <span key={i} style={{ fontSize: 12, padding: '5px 12px', background: 'rgba(14,165,233,0.1)', color: '#0EA5E9', borderRadius: 20, fontWeight: 500 }}>{kw}</span>
                   ))}
                 </div>
               </div>
               <div className="card" style={{ padding: '18px 20px' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1A1D2E', marginBottom: 10 }}>💡 Recommendation</div>
-                <p style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.6 }}>{data.marketSummary?.recommendation}</p>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', marginBottom: 10 }}>💡 Recommendation</div>
+                <p style={{ fontSize: 14, color: '#64748B', lineHeight: 1.6 }}>{data.marketSummary?.recommendation}</p>
                 {data.pricingOpportunity && (
                   <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(0,196,140,0.08)', borderRadius: 8, fontSize: 13, color: '#00C48C', fontWeight: 500 }}>
                     💰 {data.pricingOpportunity}
