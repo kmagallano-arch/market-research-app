@@ -1,10 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+let _supabase: SupabaseClient | null = null
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  global: { fetch: (url, init) => fetch(url, { ...init, cache: 'no-store' }) },
+export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
+  get(_, prop) {
+    if (!_supabase) {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+      if (!url || !key) throw new Error('Supabase env vars not configured')
+      _supabase = createClient(url, key, {
+        global: { fetch: (u, init) => fetch(u, { ...init, cache: 'no-store' }) },
+      })
+    }
+    return (_supabase as any)[prop]
+  },
 })
 
 const CACHE_TTL_MINUTES = 15
